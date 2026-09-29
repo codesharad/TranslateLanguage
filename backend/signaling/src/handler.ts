@@ -61,7 +61,7 @@ export function attachClient(ws: WebSocket, req: IncomingMessage): void {
           deviceId: body.deviceId,
           platform: body.platform,
           displayName: profile?.display_name ?? (msg as { displayName?: string }).displayName ?? userId,
-          pushToken: body.pushToken,
+          pushToken: body.pushToken ?? undefined,
           language: body.language ?? profile?.default_lang,
           phone: profile?.phone_e164,
         };

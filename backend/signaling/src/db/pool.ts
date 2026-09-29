@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import pg from "pg";
 import { config } from "../config.js";
 
@@ -16,7 +15,7 @@ export const pool = new Pool({
 });
 
 export async function migrate(): Promise<void> {
-  const here = path.dirname(fileURLToPath(import.meta.url));
+  const here = __dirname;
   const sql = fs.readFileSync(path.join(here, "schema.sql"), "utf8");
   let last: unknown;
   for (let i = 0; i < 20; i += 1) {

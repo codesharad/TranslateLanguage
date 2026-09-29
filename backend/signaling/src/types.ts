@@ -15,6 +15,8 @@ export type SignalKind =
   | "webrtc.answer"
   | "webrtc.ice"
   | "languages.set"
+  | "ping"
+  | "pong"
   | "error";
 
 export interface ClientInfo {
