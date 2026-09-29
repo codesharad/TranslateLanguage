@@ -1,0 +1,46 @@
+# Secrets
+.env
+.env.local
+*.pem
+google-credentials.json
+azure-key.json
+**/service-account*.json
+
+# Node
+node_modules/
+dist/
+backend/signaling/dist/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Flutter
+mobile/.dart_tool/
+mobile/.packages
+mobile/build/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/local.properties
+*.iml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,32 @@
+name: translate_language
+description: Bi-directional live-call language translator for iOS and Android.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_webrtc: ^0.12.9
+  flutter_callkit_incoming: ^2.5.0
+  web_socket_channel: ^3.0.2
+  permission_handler: ^11.3.1
+  record: ^7.1.1
+  uuid: ^4.5.1
+  provider: ^6.1.2
+  google_fonts: ^6.2.1
+  wakelock_plus: ^1.2.8
+  http: ^1.2.2
+  shared_preferences: ^2.3.4
+  flutter_contacts: ^1.1.9+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
