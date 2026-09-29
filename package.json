@@ -1,0 +1,13 @@
+{
+  "name": "translatelanguage",
+  "private": true,
+  "description": "Render entry point. The signaling server lives in backend/signaling.",
+  "scripts": {
+    "build": "npm install --include=dev --prefix backend/signaling && npm run build --prefix backend/signaling",
+    "postinstall": "npm run build",
+    "start": "npm start --prefix backend/signaling"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

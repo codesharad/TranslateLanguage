@@ -32,11 +32,12 @@ services:
 
   - type: web
     name: translatelanguage
-    runtime: docker
+    runtime: node
     region: singapore
     plan: starter
-    dockerfilePath: ./backend/signaling/Dockerfile
-    dockerContext: ./backend/signaling
+    rootDir: backend/signaling
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
