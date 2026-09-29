@@ -68,34 +68,14 @@ class _LanguageSelectScreenState extends State<LanguageSelectScreen> {
               const Text('Live call translator', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(
-                'You speak ${call.src.englishName}. They hear ${call.dst.englishName}.',
+                'You hear ${call.src.englishName}. Speech is detected automatically.',
                 style: const TextStyle(color: Colors.white70),
               ),
               const SizedBox(height: 28),
-              Row(
-                children: [
-                  Expanded(
-                    child: LanguageCard(
-                      label: 'I SPEAK',
-                      language: call.src,
-                      onTap: () => _pick(context, isSource: true),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: IconButton.filledTonal(
-                      onPressed: call.swapLanguages,
-                      icon: const Icon(Icons.swap_horiz),
-                    ),
-                  ),
-                  Expanded(
-                    child: LanguageCard(
-                      label: 'THEY HEAR',
-                      language: call.dst,
-                      onTap: () => _pick(context, isSource: false),
-                    ),
-                  ),
-                ],
+              LanguageCard(
+                label: 'PREFERRED LANGUAGE',
+                language: call.src,
+                onTap: () => _pick(context),
               ),
               const SizedBox(height: 28),
               TextField(
@@ -125,17 +105,16 @@ class _LanguageSelectScreenState extends State<LanguageSelectScreen> {
     );
   }
 
-  void _pick(BuildContext context, {required bool isSource}) {
+  void _pick(BuildContext context) {
     final call = context.read<CallController>();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => LanguagePickerSheet(
-        title: isSource ? 'I speak' : 'They hear',
-        selected: isSource ? call.src : call.dst,
-        exclude: isSource ? call.dst : call.src,
-        onPick: isSource ? call.setSource : call.setTarget,
+        title: 'Preferred language',
+        selected: call.src,
+        onPick: call.setPreferred,
       ),
     );
   }

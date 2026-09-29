@@ -32,20 +32,20 @@ class TranslationSocket {
   bool _disposed = false;
   String? _callId;
   String? _peerId;
-  String? _srcLang;
+  String? _hearLang;
   String? _dstLang;
   String? _voice;
 
   Future<void> connect({
     required String callId,
     required String peerId,
-    required String srcLang,
     required String dstLang,
+    String? hearLang,
     String? voice,
   }) async {
     _callId = callId;
     _peerId = peerId;
-    _srcLang = srcLang;
+    _hearLang = hearLang;
     _dstLang = dstLang;
     _voice = voice;
     _disposed = false;
@@ -89,7 +89,8 @@ class TranslationSocket {
         'type': 'session.start',
         'call_id': _callId,
         'peer_id': _peerId,
-        'src_lang': _srcLang,
+        'src_lang': 'auto',
+        'hear_lang': _hearLang,
         'dst_lang': _dstLang,
         'voice': _voice,
         'sample_rate_hz': 16000,
@@ -138,13 +139,11 @@ class TranslationSocket {
     }
   }
 
-  void setLanguages({required String srcLang, required String dstLang, String? voice}) {
-    _srcLang = srcLang;
+  void setTargetLanguage({required String dstLang, String? voice}) {
     _dstLang = dstLang;
     if (voice != null) _voice = voice;
     _sendJson({
       'type': 'languages.set',
-      'src_lang': srcLang,
       'dst_lang': dstLang,
     });
   }

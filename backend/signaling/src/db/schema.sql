@@ -46,6 +46,17 @@ CREATE TABLE IF NOT EXISTS otp_sends (
   sent_at       TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS invites (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  inviter_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  phone_e164    TEXT NOT NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
+  accepted_at   TIMESTAMPTZ,
+  UNIQUE (inviter_id, phone_e164)
+);
+
 CREATE INDEX IF NOT EXISTS users_phone_idx ON users (phone_e164);
 CREATE INDEX IF NOT EXISTS otp_sends_phone_idx ON otp_sends (phone_e164, sent_at);
 CREATE INDEX IF NOT EXISTS devices_user_idx ON devices (user_id);
+CREATE INDEX IF NOT EXISTS invites_phone_idx ON invites (phone_e164);
+CREATE INDEX IF NOT EXISTS invites_inviter_idx ON invites (inviter_id);

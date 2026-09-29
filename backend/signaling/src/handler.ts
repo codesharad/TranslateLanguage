@@ -69,6 +69,7 @@ export function attachClient(ws: WebSocket, req: IncomingMessage): void {
         if (profile) {
           await query(`UPDATE users SET last_seen_at = now() WHERE id = $1`, [userId]);
         }
+        if (info.language) await rememberLanguage(userId, info.language);
         ws.send(
           JSON.stringify({
             type: "register",
@@ -96,20 +97,29 @@ export function attachClient(ws: WebSocket, req: IncomingMessage): void {
 async function handle(userId: string, msg: WireMessage): Promise<void> {
   switch (msg.type) {
     case "dial-user": {
-      const srcLang = msg.srcLang ?? (msg.payload?.srcLang as string | undefined);
-      const dstLang = msg.dstLang ?? (msg.payload?.dstLang as string | undefined);
-      if (!srcLang || !dstLang) throw new Error("dial-user requires srcLang, dstLang");
       const calleeId = await resolveCallee(msg.to ?? (msg.payload?.to as string | undefined));
       const caller = rooms.getClient(userId);
       const calleeLive = rooms.getClient(calleeId);
       const callerRow = await loadUser(userId);
-      const call = rooms.createCall(userId, calleeId, srcLang, dstLang);
+      const calleeRow = await loadUser(calleeId);
+      const callerHear =
+        msg.hearLang ??
+        msg.callerHear ??
+        (msg.payload?.hearLang as string | undefined) ??
+        (msg.payload?.callerHear as string | undefined) ??
+        msg.srcLang ??
+        (msg.payload?.srcLang as string | undefined) ??
+        caller?.info.language ??
+        callerRow?.default_lang ??
+        "en-IN";
+      const calleeHear = calleeLive?.info.language ?? calleeRow?.default_lang ?? "en-IN";
+      const call = rooms.createCall(userId, calleeId, callerHear, calleeHear);
       try {
         await query(
           `INSERT INTO calls (id, caller_id, callee_id, caller_lang, callee_lang, state)
            VALUES ($1, $2, $3, $4, $5, 'ringing')
            ON CONFLICT (id) DO NOTHING`,
-          [call.callId, userId, calleeId, srcLang, dstLang],
+          [call.callId, userId, calleeId, callerHear, calleeHear],
         );
       } catch (err) {
         console.warn("[call] persist skipped", err);
@@ -119,12 +129,17 @@ async function handle(userId: string, msg: WireMessage): Promise<void> {
         callId: call.callId,
         from: userId,
         to: calleeId,
-        srcLang,
-        dstLang,
+        srcLang: callerHear,
+        dstLang: calleeHear,
+        hearLang: callerHear,
+        callerHear,
+        calleeHear,
         payload: {
           callerName: caller?.info.displayName ?? callerRow?.display_name ?? "Unknown",
           callerPhone: callerRow?.phone_e164,
           handle: callerRow?.phone_e164,
+          callerHear,
+          calleeHear,
         },
       };
       const delivered = rooms.send(calleeId, incoming);
@@ -147,7 +162,10 @@ async function handle(userId: string, msg: WireMessage): Promise<void> {
       rooms.send(userId, {
         type: "dial-user",
         callId: call.callId,
-        payload: { ringing: true, to: calleeId },
+        hearLang: callerHear,
+        callerHear,
+        calleeHear,
+        payload: { ringing: true, to: calleeId, callerHear, calleeHear },
       });
       return;
     }
@@ -176,22 +194,53 @@ async function handle(userId: string, msg: WireMessage): Promise<void> {
       rooms.send(peer, { ...msg, from: userId });
       return;
     }
+    case "language.set": {
+      const hear = preferredLanguage(msg);
+      if (!hear) throw new Error("language.set requires hearLang");
+      await rememberLanguage(userId, hear);
+      rooms.broadcastPresence();
+      return;
+    }
     case "languages.set": {
       const call = requireCall(msg.callId);
-      if (msg.srcLang) {
-        if (call.callerId === userId) call.callerLang = msg.srcLang;
-        else call.calleeLang = msg.srcLang;
-      }
-      if (msg.dstLang) {
-        if (call.callerId === userId) call.calleeLang = msg.dstLang;
-        else call.callerLang = msg.dstLang;
-      }
+      const hear = preferredLanguage(msg);
+      if (!hear) throw new Error("languages.set requires hearLang");
+      if (call.callerId === userId) call.callerLang = hear;
+      else if (call.calleeId === userId) call.calleeLang = hear;
+      else throw new Error("not on this call");
+      await rememberLanguage(userId, hear);
       const peer = rooms.peerOf(call, userId);
-      rooms.send(peer, { ...msg, from: userId });
+      rooms.send(peer, {
+        type: "languages.set",
+        callId: call.callId,
+        from: userId,
+        hearLang: hear,
+        srcLang: hear,
+      });
       return;
     }
     default:
       throw new Error(`unknown type ${msg.type}`);
+  }
+}
+
+function preferredLanguage(msg: WireMessage): string {
+  return (
+    msg.hearLang ??
+    (msg.payload?.hearLang as string | undefined) ??
+    msg.srcLang ??
+    (msg.payload?.srcLang as string | undefined) ??
+    ""
+  );
+}
+
+async function rememberLanguage(userId: string, language: string): Promise<void> {
+  const client = rooms.getClient(userId);
+  if (client) client.info.language = language;
+  try {
+    await query(`UPDATE users SET default_lang = $2 WHERE id = $1`, [userId, language]);
+  } catch (err) {
+    console.warn("[lang] persist skipped", err);
   }
 }
 

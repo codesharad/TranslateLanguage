@@ -68,8 +68,8 @@ class InCallScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${languageByCode(session.srcLang).englishName} → '
-                            '${languageByCode(session.dstLang).englishName}'
+                            'You hear ${languageByCode(session.srcLang).englishName}'
+                            '${session.dstLang == session.srcLang ? '' : ' · ${session.remoteName} hears ${languageByCode(session.dstLang).englishName}'}'
                             '${call.lastLatencyLabel == null ? '' : '  ·  ${call.lastLatencyLabel}'}',
                             style: const TextStyle(color: Colors.white54, fontSize: 12),
                           ),
@@ -157,82 +157,15 @@ class DualLiveCaptions extends StatelessWidget {
 }
 
 void _switchLanguage(BuildContext context) {
-  showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: const Color(0xFF0E1C30),
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
-    builder: (ctx) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-        child: Consumer<CallController>(
-          builder: (_, call, __) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 42,
-                    height: 4,
-                    decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(99)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text('Languages', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-                const SizedBox(height: 6),
-                Text(
-                  'You speak ${call.src.englishName}. They hear ${call.dst.englishName}.',
-                  style: const TextStyle(color: Colors.white70),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LanguageCard(
-                        label: 'I SPEAK',
-                        language: call.src,
-                        onTap: () => _pickCallLanguage(ctx, isSource: true),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: IconButton.filledTonal(
-                        onPressed: call.swapLanguages,
-                        icon: const Icon(Icons.swap_horiz),
-                      ),
-                    ),
-                    Expanded(
-                      child: LanguageCard(
-                        label: 'THEY HEAR',
-                        language: call.dst,
-                        onTap: () => _pickCallLanguage(ctx, isSource: false),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    },
-  );
-}
-
-void _pickCallLanguage(BuildContext context, {required bool isSource}) {
   final call = context.read<CallController>();
   showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (_) => LanguagePickerSheet(
-      title: isSource ? 'I speak' : 'They hear',
-      selected: isSource ? call.src : call.dst,
-      exclude: isSource ? call.dst : call.src,
-      onPick: isSource ? call.setSource : call.setTarget,
+      title: 'Preferred language',
+      selected: call.src,
+      onPick: call.setPreferred,
     ),
   );
 }

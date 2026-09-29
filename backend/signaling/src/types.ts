@@ -15,6 +15,7 @@ export type SignalKind =
   | "webrtc.answer"
   | "webrtc.ice"
   | "languages.set"
+  | "language.set"
   | "ping"
   | "pong"
   | "error";
@@ -48,6 +49,9 @@ export interface WireMessage {
   candidate?: RTCIceCandidateInit | Record<string, unknown>;
   srcLang?: string;
   dstLang?: string;
+  hearLang?: string;
+  callerHear?: string;
+  calleeHear?: string;
   token?: string;
   payload?: Record<string, unknown>;
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../models/user.dart';
 import '../services/api_client.dart';
 import '../services/auth_service.dart';
 import '../state/call_controller.dart';
@@ -15,12 +16,16 @@ class OtpVerifyScreen extends StatefulWidget {
     required this.phone,
     required this.displayName,
     required this.countryCode,
+    this.register = false,
+    this.changePhone = false,
     this.resendAfterSec = 60,
   });
 
   final String phone;
   final String displayName;
   final String countryCode;
+  final bool register;
+  final bool changePhone;
   final int resendAfterSec;
 
   @override
@@ -64,11 +69,16 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
     try {
       final auth = context.read<AuthService>();
       final call = context.read<CallController>();
-      final user = await auth.verifyOtp(
-        phone: widget.phone,
-        code: code,
-        displayName: widget.displayName,
-      );
+      final AuthUser user;
+      if (widget.changePhone) {
+        user = await auth.changePhone(phone: widget.phone, code: code);
+        call.updateAccount(user, auth.accessToken!);
+        if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+        return;
+      }
+      user = widget.register
+          ? await auth.register(phone: widget.phone, code: code, displayName: widget.displayName)
+          : await auth.signIn(phone: widget.phone, code: code);
       await call.startSession(user, auth.accessToken!);
       if (mounted) Navigator.of(context).popUntil((r) => r.isFirst);
     } catch (e) {

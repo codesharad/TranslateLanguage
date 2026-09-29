@@ -28,27 +28,15 @@ Future<void> showCallSetupSheet(BuildContext context, Contact contact) async {
                 Text('Call ${contact.displayName}', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
                 Text(contact.phone ?? contact.userId, style: const TextStyle(color: Colors.white54)),
                 const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: LanguageCard(
-                        label: 'I SPEAK',
-                        language: call.src,
-                        onTap: () => _pick(ctx, isSource: true),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: IconButton.filledTonal(onPressed: call.swapLanguages, icon: const Icon(Icons.swap_horiz)),
-                    ),
-                    Expanded(
-                      child: LanguageCard(
-                        label: 'THEY HEAR',
-                        language: call.dst,
-                        onTap: () => _pick(ctx, isSource: false),
-                      ),
-                    ),
-                  ],
+                const Text(
+                  'You will hear them in your preferred language.',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 12),
+                LanguageCard(
+                  label: 'PREFERRED LANGUAGE',
+                  language: call.src,
+                  onTap: () => _pick(ctx),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -74,17 +62,16 @@ Future<void> showCallSetupSheet(BuildContext context, Contact contact) async {
   );
 }
 
-void _pick(BuildContext context, {required bool isSource}) {
+void _pick(BuildContext context) {
   final call = context.read<CallController>();
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (_) => LanguagePickerSheet(
-      title: isSource ? 'I speak' : 'They hear',
-      selected: isSource ? call.src : call.dst,
-      exclude: isSource ? call.dst : call.src,
-      onPick: isSource ? call.setSource : call.setTarget,
+      title: 'Preferred language',
+      selected: call.src,
+      onPick: call.setPreferred,
     ),
   );
 }

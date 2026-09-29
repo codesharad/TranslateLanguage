@@ -31,13 +31,17 @@ class CallController extends ChangeNotifier {
 
   String userId = '';
   String displayName = '';
+  String phone = '';
   String? accessToken;
   List<Contact> matched = [];
   String searchQuery = '';
   bool contactsLoading = false;
 
+  /// Language this person hears and reads.
   Language src = languageByCode('ta-IN');
-  Language dst = languageByCode('hi-IN');
+
+  /// The other person's preferred language. Known once a call is placed.
+  Language dst = languageByCode('ta-IN');
   String calleeUserId = 'user-b';
   String keypadBuffer = '';
   List<Contact> online = [];
@@ -63,15 +67,13 @@ class CallController extends ChangeNotifier {
   Future<void> startSession(AuthUser user, String token) async {
     userId = user.id;
     displayName = user.displayName;
+    phone = user.phone;
     accessToken = token;
     api.accessToken = token;
     final prefs = await SharedPreferences.getInstance();
-    src = languageByCode(prefs.getString('src_lang') ?? user.defaultLang);
-    final savedDst = prefs.getString('dst_lang');
-    if (savedDst != null) dst = languageByCode(savedDst);
-    if (src.bcp47 == dst.bcp47) {
-      dst = languageByCode(src.bcp47 == 'hi-IN' ? 'ta-IN' : 'hi-IN');
-    }
+    final saved = prefs.getString('preferred_lang') ?? prefs.getString('src_lang') ?? user.defaultLang;
+    src = languageByCode(saved);
+    dst = src;
     await boot();
     await syncContacts();
   }
@@ -124,7 +126,22 @@ class CallController extends ChangeNotifier {
     contactsLoading = true;
     notifyListeners();
     try {
-      matched = await ContactSync(api).sync();
+      final sync = ContactSync(api);
+      final book = await sync.sync();
+      List<Contact> invited = [];
+      try {
+        invited = await sync.invites();
+      } catch (e) {
+        debugPrint('invites $e');
+      }
+      final merged = <String, Contact>{};
+      for (final contact in invited) {
+        merged[contact.userId] = contact;
+      }
+      for (final contact in book) {
+        merged[contact.userId] = contact;
+      }
+      matched = merged.values.toList();
     } catch (e) {
       debugPrint('contacts $e');
     } finally {
@@ -138,45 +155,18 @@ class CallController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSource(Language language) {
-    if (language.bcp47 == dst.bcp47) return;
-    if (session != null) {
-      switchInCallLanguage(newSrc: language);
-      return;
-    }
+  void setPreferred(Language language) {
     src = language;
+    if (session != null) session!.srcLang = language.bcp47;
     notifyListeners();
     _rememberLanguages();
-  }
-
-  void setTarget(Language language) {
-    if (language.bcp47 == src.bcp47) return;
-    if (session != null) {
-      switchInCallLanguage(newDst: language);
-      return;
-    }
-    dst = language;
-    notifyListeners();
-    _rememberLanguages();
-  }
-
-  void swapLanguages() {
-    final tmp = src;
-    src = dst;
-    dst = tmp;
-    if (session != null) {
-      session!.srcLang = src.bcp47;
-      session!.dstLang = dst.bcp47;
-    }
-    notifyListeners();
-    _rememberLanguages();
-    _pushLanguageChange();
+    _signaling?.setPreferredLanguage(callId: session?.callId, hearLang: language.bcp47);
   }
 
   void _rememberLanguages() {
     SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('preferred_lang', src.bcp47);
       prefs.setString('src_lang', src.bcp47);
-      prefs.setString('dst_lang', dst.bcp47);
     });
   }
 
@@ -222,25 +212,6 @@ class CallController extends ChangeNotifier {
     await placeCall();
   }
 
-  Future<void> switchInCallLanguage({Language? newSrc, Language? newDst}) async {
-    if (newSrc != null) src = newSrc;
-    if (newDst != null) dst = newDst;
-    if (session != null) {
-      session!.srcLang = src.bcp47;
-      session!.dstLang = dst.bcp47;
-    }
-    notifyListeners();
-    _rememberLanguages();
-    _pushLanguageChange();
-  }
-
-  void _pushLanguageChange() {
-    final id = session?.callId;
-    if (id == null) return;
-    _signaling?.setLanguages(callId: id, srcLang: src.bcp47, dstLang: dst.bcp47);
-    _media?.setLanguages(srcLang: src.bcp47, dstLang: dst.bcp47, voice: dst.azureVoice);
-  }
-
   Future<void> placeCall() async {
     lastError = null;
     if (!(_signaling?.connected ?? false)) {
@@ -249,6 +220,8 @@ class CallController extends ChangeNotifier {
       return;
     }
     connecting = true;
+    final peerLang = _languageFor(calleeUserId);
+    if (peerLang != null) dst = peerLang;
     session = CallSession(
       callId: '',
       localUserId: userId,
@@ -260,7 +233,29 @@ class CallController extends ChangeNotifier {
     );
     session!.phase = CallPhase.ringing;
     notifyListeners();
-    _signaling?.dialUser(to: calleeUserId, srcLang: src.bcp47, dstLang: dst.bcp47);
+    _signaling?.dialUser(to: calleeUserId, hearLang: src.bcp47);
+  }
+
+  void updateAccount(AuthUser user, String token) {
+    phone = user.phone;
+    displayName = user.displayName;
+    accessToken = token;
+    api.accessToken = token;
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    if (session != null) await hangup();
+    final previous = _signaling;
+    _signaling = null;
+    await previous?.dispose();
+    userId = '';
+    displayName = '';
+    phone = '';
+    accessToken = null;
+    matched = [];
+    online = [];
+    notifyListeners();
   }
 
   Future<void> hangup({bool notifyPeer = true}) async {
@@ -322,6 +317,10 @@ class CallController extends ChangeNotifier {
       case 'dial-user':
       case 'call.invite':
         if (msg['payload']?['ringing'] == true) {
+          final payload = msg['payload'];
+          final calleeHear = msg['calleeHear'] as String? ??
+              (payload is Map ? payload['calleeHear'] as String? : null);
+          _applyPeerLanguage(calleeHear);
           final callId = msg['callId'] as String;
           _beginOutgoing(callId);
         } else {
@@ -357,22 +356,10 @@ class CallController extends ChangeNotifier {
         }
         break;
       case 'languages.set':
-        final srcCode = msg['srcLang'] as String? ?? msg['src_lang'] as String?;
-        final dstCode = msg['dstLang'] as String? ?? msg['dst_lang'] as String?;
         final from = msg['from'] as String?;
-        final fromPeer = from != null && from != userId;
-        if (fromPeer) {
-          if (dstCode != null) src = languageByCode(dstCode);
-          if (srcCode != null) dst = languageByCode(srcCode);
-        } else {
-          if (srcCode != null) src = languageByCode(srcCode);
-          if (dstCode != null) dst = languageByCode(dstCode);
+        if (from != null && from != userId) {
+          _applyPeerLanguage(msg['hearLang'] as String? ?? msg['srcLang'] as String?);
         }
-        if (session != null) {
-          session!.srcLang = src.bcp47;
-          session!.dstLang = dst.bcp47;
-        }
-        notifyListeners();
         break;
     }
   }
@@ -399,6 +386,7 @@ class CallController extends ChangeNotifier {
     );
     session!.callId = callId;
     session!.phase = CallPhase.ringing;
+    _signaling?.setPreferredLanguage(callId: callId, hearLang: src.bcp47);
     lastError = null;
     notifyListeners();
     if (defaultTargetPlatform == TargetPlatform.iOS) {
@@ -421,21 +409,39 @@ class CallController extends ChangeNotifier {
     }
   }
 
+  Language? _languageFor(String userId) {
+    for (final contact in [...online, ...matched]) {
+      if (contact.userId == userId && (contact.language ?? '').isNotEmpty) {
+        return languageByCode(contact.language!);
+      }
+    }
+    return null;
+  }
+
+  void _applyPeerLanguage(String? code) {
+    if (code == null || code.isEmpty) return;
+    dst = languageByCode(code);
+    if (session != null) session!.dstLang = dst.bcp47;
+    _media?.setTargetLanguage(dstLang: dst.bcp47, voice: dst.azureVoice);
+    notifyListeners();
+  }
+
   Future<void> _onIncoming(Map<String, dynamic> msg) async {
     final callId = msg['callId'] as String;
     final from = msg['from'] as String;
-    final name = msg['payload']?['callerName'] as String? ?? from;
-    // Remote src is their speaking language = our dst, and vice versa.
+    final rawPayload = msg['payload'];
+    final payload = rawPayload is Map ? Map<String, dynamic>.from(rawPayload) : null;
+    final name = payload?['callerName'] as String? ?? from;
+    final callerHear = (msg['callerHear'] ?? payload?['callerHear'] ?? msg['srcLang']) as String?;
     session = CallSession(
       callId: callId,
       localUserId: userId,
       remoteUserId: from,
       remoteName: name,
-      srcLang: msg['dstLang'] as String? ?? src.bcp47,
-      dstLang: msg['srcLang'] as String? ?? dst.bcp47,
+      srcLang: src.bcp47,
+      dstLang: callerHear ?? dst.bcp47,
       outbound: false,
     );
-    src = languageByCode(session!.srcLang);
     dst = languageByCode(session!.dstLang);
     session!.phase = CallPhase.ringing;
     lastError = null;
@@ -518,7 +524,7 @@ class CallController extends ChangeNotifier {
     await _media!.connect(
       callId: session!.callId,
       peerId: userId,
-      srcLang: session!.srcLang,
+      hearLang: session!.srcLang,
       dstLang: session!.dstLang,
       voice: languageByCode(session!.dstLang).azureVoice,
     );
@@ -587,21 +593,12 @@ class CallController extends ChangeNotifier {
         playback.cancel(generation: _ttsGeneration);
         break;
       case 'languages.set':
-        final srcCode = event.json['src_lang'] as String?;
         final dstCode = event.json['dst_lang'] as String?;
-        final fromPeer = event.json['peer_id'] != userId;
-        if (fromPeer) {
-          if (dstCode != null) src = languageByCode(dstCode);
-          if (srcCode != null) dst = languageByCode(srcCode);
-        } else {
-          if (srcCode != null) src = languageByCode(srcCode);
-          if (dstCode != null) dst = languageByCode(dstCode);
+        if (dstCode != null && dstCode.isNotEmpty && dstCode != 'auto') {
+          dst = languageByCode(dstCode);
+          session?.dstLang = dst.bcp47;
+          notifyListeners();
         }
-        if (session != null) {
-          session!.srcLang = src.bcp47;
-          session!.dstLang = dst.bcp47;
-        }
-        notifyListeners();
         break;
       case 'error':
         final raw = event.json['message']?.toString() ?? 'Speech recognition failed';

@@ -129,10 +129,15 @@ class SignalingService {
 
   void dialUser({
     required String to,
-    required String srcLang,
-    required String dstLang,
+    required String hearLang,
   }) {
-    send({'type': 'dial-user', 'to': to, 'srcLang': srcLang, 'dstLang': dstLang});
+    send({
+      'type': 'dial-user',
+      'to': to,
+      'hearLang': hearLang,
+      'srcLang': hearLang,
+      'dstLang': hearLang,
+    });
   }
 
   void accept(String callId) => send({'type': 'accept-call', 'callId': callId});
@@ -150,17 +155,19 @@ class SignalingService {
   void sendIce(String callId, Map<String, dynamic> candidate) =>
       send({'type': 'webrtc.ice', 'callId': callId, 'candidate': candidate});
 
-  void setLanguages({
-    required String callId,
-    required String srcLang,
-    required String dstLang,
-  }) {
-    send({
-      'type': 'languages.set',
-      'callId': callId,
-      'srcLang': srcLang,
-      'dstLang': dstLang,
-    });
+  void setPreferredLanguage({String? callId, required String hearLang}) {
+    if (_register != null) {
+      _register = {..._register!, 'language': hearLang};
+      send(_register!);
+    }
+    if (callId != null && callId.isNotEmpty) {
+      send({
+        'type': 'languages.set',
+        'callId': callId,
+        'hearLang': hearLang,
+        'srcLang': hearLang,
+      });
+    }
   }
 
   void send(Map<String, dynamic> message) {

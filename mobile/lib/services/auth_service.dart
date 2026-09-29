@@ -26,16 +26,52 @@ class AuthService {
     );
   }
 
-  Future<AuthUser> verifyOtp({
+  Future<AuthUser> signIn({
     required String phone,
     required String code,
-    required String displayName,
   }) async {
     final json = await _postWithRetry('/v1/auth/otp/verify', {
       'phoneNumber': phone,
       'code': code,
+    });
+    return _storeSession(json);
+  }
+
+  Future<AuthUser> register({
+    required String phone,
+    required String code,
+    required String displayName,
+  }) async {
+    final json = await _postWithRetry('/v1/auth/register', {
+      'phoneNumber': phone,
+      'code': code,
       'displayName': displayName,
     });
+    return _storeSession(json);
+  }
+
+  Future<AuthUser> changePhone({
+    required String phone,
+    required String code,
+  }) async {
+    final json = await _postWithRetry('/v1/auth/phone', {
+      'phoneNumber': phone,
+      'code': code,
+    });
+    return _storeSession(json);
+  }
+
+  Future<Map<String, dynamic>> invite({
+    required String phoneNumber,
+    required String countryCode,
+  }) {
+    return _api.post('/v1/contacts/invite', {
+      'phoneNumber': phoneNumber,
+      'countryCode': countryCode,
+    });
+  }
+
+  Future<AuthUser> _storeSession(Map<String, dynamic> json) async {
     final token = json['accessToken'] as String;
     final user = AuthUser.fromJson(json['user'] as Map<String, dynamic>);
     _api.accessToken = token;
@@ -79,5 +115,7 @@ class AuthService {
     await prefs.remove(_tokenKey);
     await prefs.remove(_userKey);
     await prefs.remove('user_id');
+    await prefs.remove('user_phone');
+    await prefs.remove('user_name');
   }
 }

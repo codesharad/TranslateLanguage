@@ -11,9 +11,13 @@ import asyncio
 from collections.abc import AsyncIterator
 
 import azure.cognitiveservices.speech as speechsdk
+import structlog
 
 from app.config import Settings
+from app.languages import is_auto, lid_candidates
 from app.pipeline.base import SttPartial, StreamingStt
+
+log = structlog.get_logger("azure-stt")
 
 
 class AzureStreamingStt(StreamingStt):
@@ -24,6 +28,11 @@ class AzureStreamingStt(StreamingStt):
         self._results: asyncio.Queue[SttPartial | None] = asyncio.Queue()
         self._loop: asyncio.AbstractEventLoop | None = None
         self._generation = 0
+        self._priority: list[str] = []
+        self._auto = False
+
+    def prepare_detection(self, *codes: str) -> None:
+        self._priority = [code for code in codes if code and not is_auto(code)]
 
     async def start(self, language: str) -> None:
         self._generation += 1
@@ -41,7 +50,18 @@ class AzureStreamingStt(StreamingStt):
             subscription=self._settings.azure_speech_key,
             region=self._settings.azure_speech_region,
         )
-        speech_config.speech_recognition_language = language
+        self._auto = is_auto(language)
+        lid_config = None
+        if self._auto:
+            candidates = lid_candidates(*self._priority)
+            log.info("stt.lid", candidates=candidates)
+            speech_config.set_property(
+                speechsdk.PropertyId.SpeechServiceConnection_LanguageIdMode,
+                "Continuous",
+            )
+            lid_config = speechsdk.languageconfig.AutoDetectSourceLanguageConfig(languages=candidates)
+        else:
+            speech_config.speech_recognition_language = language
         speech_config.set_property(
             speechsdk.PropertyId.SpeechServiceConnection_InitialSilenceTimeoutMs,
             "2500",
@@ -51,10 +71,17 @@ class AzureStreamingStt(StreamingStt):
             str(min(self._settings.vad_silence_ms, 250)),
         )
         speech_config.set_property_by_name("SpeechServiceResponse_StablePartialResultThreshold", "2")
-        self._recognizer = speechsdk.SpeechRecognizer(
-            speech_config=speech_config,
-            audio_config=audio_config,
-        )
+        if lid_config is None:
+            self._recognizer = speechsdk.SpeechRecognizer(
+                speech_config=speech_config,
+                audio_config=audio_config,
+            )
+        else:
+            self._recognizer = speechsdk.SpeechRecognizer(
+                speech_config=speech_config,
+                auto_detect_source_language_config=lid_config,
+                audio_config=audio_config,
+            )
         self._recognizer.recognizing.connect(lambda evt, gen=generation: self._on_recognizing(evt, gen))
         self._recognizer.recognized.connect(lambda evt, gen=generation: self._on_recognized(evt, gen))
         self._recognizer.canceled.connect(lambda evt, gen=generation: self._on_canceled(evt, gen))
@@ -81,24 +108,38 @@ class AzureStreamingStt(StreamingStt):
             await asyncio.to_thread(self._push.close)
         await self._results.put(None)
 
-    def _emit(self, text: str, is_final: bool, confidence: float) -> None:
+    def _emit(self, text: str, is_final: bool, confidence: float, language: str = "") -> None:
         if not text or self._loop is None:
             return
         self._loop.call_soon_threadsafe(
             self._results.put_nowait,
-            SttPartial(text=text.strip(), is_final=is_final, confidence=confidence),
+            SttPartial(
+                text=text.strip(),
+                is_final=is_final,
+                confidence=confidence,
+                language=language,
+            ),
         )
+
+    def _detected(self, result: speechsdk.SpeechRecognitionResult) -> str:
+        if not self._auto:
+            return ""
+        try:
+            detected = speechsdk.AutoDetectSourceLanguageResult(result)
+        except Exception:
+            return ""
+        return detected.language or ""
 
     def _on_recognizing(self, evt: speechsdk.SpeechRecognitionEventArgs, generation: int) -> None:
         if generation != self._generation:
             return
-        self._emit(evt.result.text, False, 0.0)
+        self._emit(evt.result.text, False, 0.0, self._detected(evt.result))
 
     def _on_recognized(self, evt: speechsdk.SpeechRecognitionEventArgs, generation: int) -> None:
         if generation != self._generation:
             return
         if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
-            self._emit(evt.result.text, True, 0.0)
+            self._emit(evt.result.text, True, 0.0, self._detected(evt.result))
 
     def _on_canceled(self, evt: speechsdk.SpeechRecognitionCanceledEventArgs, generation: int) -> None:
         if generation != self._generation or self._loop is None:

@@ -41,6 +41,36 @@ const verifySchema = z
   })
   .refine((body) => Boolean(body.phone || body.phoneNumber), { message: "phone number required" });
 
+const registerSchema = verifySchema.and(
+  z.object({
+    displayName: z.string().trim().min(1).max(80),
+  }),
+);
+
+type UserRow = { id: string; display_name: string; default_lang: string; phone_e164: string };
+
+function userPayload(user: UserRow, token: string) {
+  return {
+    success: true,
+    message: "OTP verified",
+    accessToken: token,
+    user: {
+      id: user.id,
+      phone: user.phone_e164,
+      displayName: user.display_name,
+      defaultLang: user.default_lang,
+    },
+  };
+}
+
+async function acceptInvites(phone: string): Promise<void> {
+  await query(
+    `UPDATE invites SET accepted_at = now()
+     WHERE phone_e164 = $1 AND accepted_at IS NULL`,
+    [phone],
+  );
+}
+
 function fail(res: Response, err: unknown): void {
   if (err instanceof z.ZodError) {
     res.status(400).json({ error: "invalid request", code: "invalid_request" });
@@ -85,34 +115,89 @@ export function authRouter(): Router {
     try {
       const body = verifySchema.parse(req.body);
       const phone = await consumeOtp(body.phoneNumber ?? body.phone ?? "", body.code, body.countryCode);
-      const existing = await query<{ id: string; display_name: string; default_lang: string }>(
-        `SELECT id, display_name, default_lang FROM users WHERE phone_e164 = $1`,
+      const existing = await query<UserRow>(
+        `SELECT id, display_name, default_lang, phone_e164 FROM users WHERE phone_e164 = $1`,
         [phone],
       );
-      let user = existing.rows[0];
+      const user = existing.rows[0];
       if (!user) {
-        const created = await query<{ id: string; display_name: string; default_lang: string }>(
-          `INSERT INTO users (phone_e164, display_name) VALUES ($1, $2)
-           RETURNING id, display_name, default_lang`,
-          [phone, body.displayName ?? phone],
-        );
-        user = created.rows[0];
-      } else if (body.displayName) {
-        await query(`UPDATE users SET display_name = $1 WHERE id = $2`, [body.displayName, user.id]);
-        user.display_name = body.displayName;
+        res.status(404).json({
+          error: "No account for this number. Register first.",
+          code: "not_registered",
+        });
+        return;
       }
       const token = signAccess({ sub: user.id, phone, name: user.display_name });
-      res.json({
-        success: true,
-        message: "OTP verified",
-        accessToken: token,
-        user: {
-          id: user.id,
-          phone,
-          displayName: user.display_name,
-          defaultLang: user.default_lang,
-        },
-      });
+      res.json(userPayload(user, token));
+    } catch (err) {
+      fail(res, err);
+    }
+  };
+
+  const register = async (req: Request, res: Response) => {
+    try {
+      const body = registerSchema.parse(req.body);
+      const phone = await consumeOtp(body.phoneNumber ?? body.phone ?? "", body.code, body.countryCode);
+      const existing = await query<{ id: string }>(`SELECT id FROM users WHERE phone_e164 = $1`, [phone]);
+      if (existing.rows[0]) {
+        res.status(409).json({
+          error: "This number is already registered. Sign in instead.",
+          code: "already_registered",
+        });
+        return;
+      }
+      const created = await query<UserRow>(
+        `INSERT INTO users (phone_e164, display_name) VALUES ($1, $2)
+         RETURNING id, display_name, default_lang, phone_e164`,
+        [phone, body.displayName.trim()],
+      );
+      const user = created.rows[0];
+      await acceptInvites(phone);
+      const token = signAccess({ sub: user.id, phone, name: user.display_name });
+      res.status(201).json(userPayload(user, token));
+    } catch (err) {
+      fail(res, err);
+    }
+  };
+
+  const changePhone = async (req: Request, res: Response) => {
+    try {
+      const body = verifySchema.parse(req.body);
+      const me = (req as AuthedRequest).user.sub;
+      const phone = await consumeOtp(body.phoneNumber ?? body.phone ?? "", body.code, body.countryCode);
+      const current = await query<UserRow>(
+        `SELECT id, display_name, default_lang, phone_e164 FROM users WHERE id = $1`,
+        [me],
+      );
+      const user = current.rows[0];
+      if (!user) {
+        res.status(404).json({ error: "Account not found.", code: "not_found" });
+        return;
+      }
+      if (user.phone_e164 === phone) {
+        res.status(400).json({ error: "That is already your number.", code: "same_phone" });
+        return;
+      }
+      const taken = await query<{ id: string }>(
+        `SELECT id FROM users WHERE phone_e164 = $1 AND id <> $2`,
+        [phone, me],
+      );
+      if (taken.rows[0]) {
+        res.status(409).json({
+          error: "That number is already on another account.",
+          code: "phone_taken",
+        });
+        return;
+      }
+      await query(`UPDATE users SET phone_e164 = $1 WHERE id = $2`, [phone, me]);
+      await query(
+        `UPDATE invites SET phone_e164 = $1 WHERE phone_e164 = $2 AND accepted_at IS NULL`,
+        [phone, user.phone_e164],
+      );
+      await acceptInvites(phone);
+      user.phone_e164 = phone;
+      const token = signAccess({ sub: user.id, phone, name: user.display_name });
+      res.json(userPayload(user, token));
     } catch (err) {
       fail(res, err);
     }
@@ -122,6 +207,8 @@ export function authRouter(): Router {
   r.post("/send-otp", sendOtp);
   r.post("/otp/verify", verifyOtp);
   r.post("/verify-otp", verifyOtp);
+  r.post("/register", register);
+  r.post("/phone", requireAuth, changePhone);
 
   r.get("/me", requireAuth, async (req, res) => {
     const { sub } = (req as AuthedRequest).user;

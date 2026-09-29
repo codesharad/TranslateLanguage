@@ -48,9 +48,10 @@ class AzureTranslator(Translator):
         from_code, to_code, to_script = translator_pair(src, dst)
         params = {
             "api-version": "3.0",
-            "from": from_code,
             "to": to_code,
         }
+        if from_code:
+            params["from"] = from_code
         if to_script:
             params["toScript"] = to_script
         headers = {

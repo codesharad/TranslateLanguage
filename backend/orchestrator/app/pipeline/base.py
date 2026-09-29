@@ -14,6 +14,10 @@ class SttPartial:
 
 
 class StreamingStt(ABC):
+    def prepare_detection(self, *codes: str) -> None:
+        """Locales to pin when recognition language is automatic."""
+        return None
+
     @abstractmethod
     async def start(self, language: str) -> None: ...
 

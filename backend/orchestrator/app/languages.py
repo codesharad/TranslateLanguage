@@ -63,9 +63,14 @@ def voice_for(code: str | None) -> str:
 
 
 def translator_pair(src: str, dst: str) -> tuple[str, str, str | None]:
-    source = lookup(src)
+    source = None if is_auto(src) else lookup(src)
     target = lookup(dst)
-    from_code = source.translator_code if source else src.split("-")[0]
+    if source:
+        from_code = source.translator_code
+    elif is_auto(src):
+        from_code = ""
+    else:
+        from_code = src.split("-")[0]
     to_code = target.translator_code if target else dst.split("-")[0]
     to_script = target.to_script if target else None
     return from_code, to_code, to_script
@@ -87,3 +92,47 @@ def is_latin_heavy(text: str) -> bool:
         return False
     latin = sum(1 for ch in letters if ("A" <= ch <= "Z") or ("a" <= ch <= "z"))
     return latin / len(letters) > 0.5
+
+
+def is_auto(code: str | None) -> bool:
+    return not code or code.strip().lower() in {"auto", "und"}
+
+
+def same_language(left: str | None, right: str | None) -> bool:
+    """True when both codes are the same translation language."""
+    if is_auto(left) or is_auto(right):
+        return False
+    source = lookup(left)
+    target = lookup(right)
+    if source and target:
+        return source.translator_code == target.translator_code
+    return (left or "").split("-")[0].lower() == (right or "").split("-")[0].lower()
+
+
+def lid_candidates(*priority: str | None, limit: int = 10) -> list[str]:
+    """Locales for Azure continuous language identification.
+
+    Azure accepts at most 10 candidates, and only one locale per base language.
+    Preferred languages are pinned first so a call in those languages is detected.
+    """
+    ordered: list[str] = []
+    seen: set[str] = set()
+
+    def add(code: str | None) -> None:
+        if len(ordered) >= limit or is_auto(code):
+            return
+        profile = lookup(code)
+        stt = profile.stt_code if profile else ""
+        if not stt:
+            return
+        base = stt.split("-")[0].lower()
+        if base in seen:
+            return
+        seen.add(base)
+        ordered.append(stt)
+
+    for code in priority:
+        add(code)
+    for item in LANGUAGES:
+        add(item.stt_code)
+    return ordered

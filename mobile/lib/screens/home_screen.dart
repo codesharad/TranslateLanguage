@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/contact.dart';
+import '../services/auth_service.dart';
 import '../state/call_controller.dart';
 import '../widgets/language_card.dart';
-import '../widgets/server_switch.dart';
 import 'call_setup_sheet.dart';
+import 'change_phone_screen.dart';
+import 'invite_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,22 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 8, 20, 0),
-              child: ServerSwitch(),
-            ),
-            Expanded(
-              child: IndexedStack(
-                index: _tab,
-                children: const [
-                  _ContactsTab(),
-                  _KeypadTab(),
-                  _LanguagesTab(),
-                ],
-              ),
-            ),
+        child: IndexedStack(
+          index: _tab,
+          children: const [
+            _ContactsTab(),
+            _KeypadTab(),
+            _LanguagesTab(),
+            _AccountTab(),
           ],
         ),
       ),
@@ -47,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           NavigationDestination(icon: Icon(Icons.people_alt_outlined), selectedIcon: Icon(Icons.people_alt), label: 'Contacts'),
           NavigationDestination(icon: Icon(Icons.dialpad), label: 'Keypad'),
           NavigationDestination(icon: Icon(Icons.translate), label: 'Languages'),
+          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Account'),
         ],
       ),
     );
@@ -68,7 +62,7 @@ class _ContactsTab extends StatelessWidget {
           const SizedBox(height: 4),
           const Text('App-to-app translator', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
-          Text('You speak ${call.src.englishName}  →  they hear ${call.dst.englishName}',
+          Text('You hear ${call.src.englishName}',
               style: const TextStyle(color: Colors.white70)),
           const SizedBox(height: 8),
           Text(
@@ -82,6 +76,15 @@ class _ContactsTab extends StatelessWidget {
             const SizedBox(height: 6),
             Text(call.lastError!, style: const TextStyle(color: Color(0xFFE23B4A), fontSize: 13)),
           ],
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InviteScreen())),
+              icon: const Icon(Icons.person_add_alt),
+              label: const Text('Invite someone'),
+            ),
+          ),
           const SizedBox(height: 12),
           TextField(
             onChanged: call.setSearch,
@@ -123,9 +126,9 @@ class _ContactTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final call = context.read<CallController>();
+    final waiting = !contact.registered;
     return ListTile(
-      onTap: () => showCallSetupSheet(context, contact),
+      onTap: waiting ? null : () => showCallSetupSheet(context, contact),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       tileColor: const Color(0xFF0E1C30),
       leading: CircleAvatar(
@@ -133,21 +136,23 @@ class _ContactTile extends StatelessWidget {
         child: Text(contact.initial),
       ),
       title: Text(contact.displayName, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(contact.phone ?? contact.userId),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (contact.online)
-            const Padding(
-              padding: EdgeInsets.only(right: 8),
-              child: Icon(Icons.circle, size: 10, color: Color(0xFF2EE6A6)),
+      subtitle: Text(waiting ? 'Invited · waiting to register' : (contact.phone ?? contact.userId)),
+      trailing: waiting
+          ? const Text('Invited', style: TextStyle(color: Colors.white54))
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (contact.online)
+                  const Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Icon(Icons.circle, size: 10, color: Color(0xFF2EE6A6)),
+                  ),
+                IconButton.filledTonal(
+                  onPressed: () => showCallSetupSheet(context, contact),
+                  icon: const Icon(Icons.call),
+                ),
+              ],
             ),
-          IconButton.filledTonal(
-            onPressed: () => showCallSetupSheet(context, contact),
-            icon: const Icon(Icons.call),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -223,52 +228,89 @@ class _LanguagesTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Call setup', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+          const Text('Preferred language', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
-          const Text('Pick what you speak and what the other person should hear. You can switch again during the call.',
-              style: TextStyle(color: Colors.white70)),
+          const Text(
+            'This is the language you hear and read. Speak in any language — it is translated into the other person\'s language. You can change this at any time, including during a call.',
+            style: TextStyle(color: Colors.white70),
+          ),
           const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: LanguageCard(
-                  label: 'I SPEAK',
-                  language: call.src,
-                  onTap: () => _pick(context, isSource: true),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: IconButton.filledTonal(
-                  onPressed: call.swapLanguages,
-                  icon: const Icon(Icons.swap_horiz),
-                ),
-              ),
-              Expanded(
-                child: LanguageCard(
-                  label: 'THEY HEAR',
-                  language: call.dst,
-                  onTap: () => _pick(context, isSource: false),
-                ),
-              ),
-            ],
+          LanguageCard(
+            label: 'PREFERRED LANGUAGE',
+            language: call.src,
+            onTap: () => _pick(context),
           ),
         ],
       ),
     );
   }
 
-  void _pick(BuildContext context, {required bool isSource}) {
+  void _pick(BuildContext context) {
     final call = context.read<CallController>();
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => LanguagePickerSheet(
-        title: isSource ? 'I speak' : 'They hear',
-        selected: isSource ? call.src : call.dst,
-        exclude: isSource ? call.dst : call.src,
-        onPick: isSource ? call.setSource : call.setTarget,
+        title: 'Preferred language',
+        selected: call.src,
+        onPick: call.setPreferred,
+      ),
+    );
+  }
+}
+
+class _AccountTab extends StatelessWidget {
+  const _AccountTab();
+
+  @override
+  Widget build(BuildContext context) {
+    final call = context.watch<CallController>();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Account', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 8),
+          Text(call.displayName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 4),
+          Text(call.phone.isEmpty ? 'No number saved' : call.phone, style: const TextStyle(color: Colors.white70)),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: FilledButton.icon(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChangePhoneScreen())),
+              icon: const Icon(Icons.sms_outlined),
+              label: const Text('Change mobile number'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const InviteScreen())),
+              icon: const Icon(Icons.person_add_alt),
+              label: const Text('Invite someone'),
+            ),
+          ),
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: TextButton(
+              onPressed: () async {
+                final auth = context.read<AuthService>();
+                final account = context.read<CallController>();
+                await auth.signOut();
+                await account.signOut();
+              },
+              child: const Text('Sign out'),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -52,8 +52,9 @@ class SessionStart(BaseModel):
     type: Literal["session.start"] = ControlType.SESSION_START
     call_id: str
     peer_id: str
-    src_lang: str = Field(examples=["ta-IN"])
+    src_lang: str = Field(default="auto", examples=["auto"])
     dst_lang: str = Field(examples=["hi-IN"])
+    hear_lang: str = ""
     voice: str | None = None
     sample_rate_hz: int = 16000
 

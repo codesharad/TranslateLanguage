@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../models/dial_country.dart';
 import '../services/api_client.dart';
 import '../services/auth_service.dart';
-import '../widgets/server_switch.dart';
 import 'otp_verify_screen.dart';
 
 class OtpPhoneScreen extends StatefulWidget {
@@ -19,6 +18,7 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
   final _phone = TextEditingController();
   final _name = TextEditingController();
   DialCountry _country = dialCountries.first;
+  bool _register = false;
   bool _busy = false;
   String? _error;
 
@@ -31,6 +31,10 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
 
   Future<void> _submit() async {
     final national = _phone.text.replaceAll(RegExp(r'\D'), '');
+    if (_register && _name.text.trim().isEmpty) {
+      setState(() => _error = 'Enter your name to register.');
+      return;
+    }
     if (national.length < 6) {
       setState(() => _error = 'Enter the phone number without the country code.');
       return;
@@ -45,10 +49,11 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
       if (!mounted) return;
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (_) => OtpVerifyScreen(
+            builder: (_) => OtpVerifyScreen(
             phone: issued.phone,
             countryCode: _country.dial,
-            displayName: _name.text.trim().isEmpty ? issued.phone : _name.text.trim(),
+            displayName: _name.text.trim(),
+            register: _register,
             resendAfterSec: issued.retryAfterSec,
           ),
         ),
@@ -71,19 +76,34 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
             children: [
               const Text('TranslateLanguage', style: TextStyle(letterSpacing: 1.4, color: Colors.white54)),
               const SizedBox(height: 8),
-              const Text('Sign in with your number', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
+              Text(_register ? 'Create your account' : 'Sign in with your number',
+                  style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
               const SizedBox(height: 8),
               const Text('We will text a 6-digit code. It expires in 5 minutes.',
                   style: TextStyle(color: Colors.white70)),
-              const SizedBox(height: 16),
-              const ServerSwitch(),
               const SizedBox(height: 24),
-              TextField(
-                controller: _name,
-                textCapitalization: TextCapitalization.words,
-                decoration: _field(label: 'Your name'),
+              SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(value: true, label: Text('Register'), icon: Icon(Icons.person_add_alt)),
+                  ButtonSegment(value: false, label: Text('Sign in'), icon: Icon(Icons.login)),
+                ],
+                selected: {_register},
+                onSelectionChanged: _busy
+                    ? null
+                    : (value) => setState(() {
+                          _register = value.first;
+                          _error = null;
+                        }),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              if (_register) ...[
+                TextField(
+                  controller: _name,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: _field(label: 'Your name'),
+                ),
+                const SizedBox(height: 12),
+              ],
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -126,7 +146,7 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
                 height: 52,
                 child: FilledButton(
                   onPressed: _busy ? null : _submit,
-                  child: Text(_busy ? 'Sending…' : 'Send OTP'),
+                  child: Text(_busy ? 'Sending…' : (_register ? 'Register' : 'Sign in')),
                 ),
               ),
             ],
@@ -165,6 +185,14 @@ String otpErrorText(Object error) {
         return 'SMS is not set up on the server yet.';
       case 'invalid_phone':
         return 'Enter a valid phone number.';
+      case 'not_registered':
+        return 'No account for this number. Register first.';
+      case 'already_registered':
+        return 'This number is already registered. Sign in instead.';
+      case 'phone_taken':
+        return 'That number is already on another account.';
+      case 'same_phone':
+        return 'That is already your number.';
       default:
         return error.message;
     }

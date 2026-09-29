@@ -1,8 +1,8 @@
 """One-leg translation session.
 
-A call has two legs (A→B and B→A). Each WebSocket is one leg: mic of this
-peer becomes TTS for the other peer. The signaling server pairs sockets by
-call_id and forwards TTS binary frames + transcripts to the far side.
+A call has two legs. Each WebSocket is one speaker: their microphone is
+recognized in whatever language they use, then translated and spoken in the
+other person's preferred language.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ from app.hub import CallRoom
 from app.audio.pcm import LatencyProbe, now_ms
 from app.audio.vad import EndpointingVad
 from app.config import Settings
-from app.languages import voice_for
+from app.languages import is_auto, same_language, voice_for
 from app.pipeline.base import SttPartial
 from app.providers.factory import build_stt, build_translator, build_tts
 from app.protocol import (
@@ -65,8 +65,13 @@ class TranslationLeg:
         self._seq_out = 0
         self._last_partial = ""
         self._probe: LatencyProbe | None = None
-        self._src_lang = start.src_lang
+        raw_src = (start.src_lang or "").strip()
+        self._hear_lang = (start.hear_lang or "").strip()
+        if not self._hear_lang and not is_auto(raw_src):
+            self._hear_lang = raw_src
+        self._src_lang = "auto"
         self._dst_lang = start.dst_lang
+        self._spoken_lang = ""
         self._stt_pump: asyncio.Task[None] | None = None
         self._heard_speech = False
         self._last_rx = time.monotonic()
@@ -74,7 +79,11 @@ class TranslationLeg:
         self._mt_seq = 0
 
     async def run(self) -> None:
-        await self._stt.start(self._src_lang)
+        self._stt.prepare_detection(self._hear_lang, self._dst_lang)
+        if self._settings.resolved_stt() == "azure":
+            await self._stt.start("auto")
+        else:
+            await self._stt.start(self._hear_lang or self._dst_lang or "en-IN")
         await self._send_local(
             dumps(
                 SessionReady(
@@ -90,7 +99,8 @@ class TranslationLeg:
             provider=self._settings.resolved_stt(),
             call_id=self._start.call_id,
             peer=self._start.peer_id,
-            src=self._src_lang,
+            src="auto",
+            hear=self._hear_lang,
             dst=self._dst_lang,
         )
         reader = asyncio.create_task(self._read_uplink(), name="uplink")
@@ -182,41 +192,24 @@ class TranslationLeg:
             return
         if payload.get("type") != ControlType.LANGUAGES_SET:
             return
-        src = payload.get("src_lang") or self._src_lang
-        dst = payload.get("dst_lang") or self._dst_lang
-        sender = payload.get("peer_id")
-        inverted = bool(sender and sender != self._start.peer_id)
-        if inverted:
-            src, dst = dst, src
-        await self.set_languages(src, dst, broadcast=not inverted)
+        dst = payload.get("dst_lang") or ""
+        if not dst or is_auto(dst):
+            return
+        await self.set_target_language(dst)
 
-    async def set_languages(self, src: str, dst: str, *, broadcast: bool = True) -> None:
-        changed = src != self._src_lang or dst != self._dst_lang
-        self._src_lang = src
+    async def set_target_language(self, dst: str) -> None:
+        """Point translation and TTS at the listener's preferred language.
+
+        Speech recognition stays on automatic detection. Changing what the
+        other person wants to hear must not restart this recognizer.
+        """
+        if dst == self._dst_lang:
+            return
         self._dst_lang = dst
-        self._start.src_lang = src
         self._start.dst_lang = dst
         self._start.voice = voice_for(dst)
-        if not changed:
-            return
-        log.info("languages.set", src=src, dst=dst, call_id=self._start.call_id)
+        log.info("languages.target", dst=dst, call_id=self._start.call_id, peer=self._start.peer_id)
         await self._cancel_tts()
-        if self._stt_pump:
-            self._stt_pump.cancel()
-        await self._stt.reconfigure(src)
-        self._stt_pump = asyncio.create_task(self._pump_stt(), name="stt-pump")
-        notice = dumps(
-            {
-                "type": ControlType.LANGUAGES_SET,
-                "call_id": self._start.call_id,
-                "src_lang": src,
-                "dst_lang": dst,
-                "peer_id": self._start.peer_id,
-            }
-        )
-        await self._send_local(notice)
-        if broadcast:
-            await self._send_to_peer(notice)
 
     async def _pump_stt(self) -> None:
         async for partial in self._stt.results():
@@ -245,22 +238,23 @@ class TranslationLeg:
         if self._probe.stt_first_partial is None:
             self._probe.mark("stt_first_partial")
 
+        source = self._remember_spoken(partial.language)
         if not partial.is_final:
             self._last_partial = partial.text
-            await self._emit_local(partial.text, is_final=False)
+            await self._emit_local(partial.text, is_final=False, language=source)
             self._schedule_partial_mt(partial.text)
             return
 
         self._probe.mark("stt_final")
         self._last_partial = ""
-        await self._emit_local(partial.text, is_final=True)
-        translated = (await self._mt.translate(partial.text, self._src_lang, self._dst_lang)).strip()
+        await self._emit_local(partial.text, is_final=True, language=source)
+        translated = await self._translate(partial.text, source)
         self._probe.mark("mt_done")
         if translated:
             await self._emit_remote(translated, is_final=True)
             await self._speak(translated, committed=True)
         else:
-            log.info("subtitle.untranslated", text=partial.text, src=self._src_lang, dst=self._dst_lang)
+            log.info("subtitle.untranslated", text=partial.text, src=source, dst=self._dst_lang)
             self._probe = None
 
     def _schedule_partial_mt(self, text: str) -> None:
@@ -277,7 +271,7 @@ class TranslationLeg:
             return
         if self._probe is None or self._probe.utterance_id != utterance:
             return
-        translated = (await self._mt.translate(text, self._src_lang, self._dst_lang)).strip()
+        translated = await self._translate(text, self._spoken_lang)
         if seq != self._mt_seq or not translated:
             return
         if self._probe is None or self._probe.utterance_id != utterance:
@@ -294,10 +288,26 @@ class TranslationLeg:
             "utterance_id": self._probe.utterance_id if self._probe else "",
         }
 
-    async def _emit_local(self, text: str, *, is_final: bool) -> None:
+    def _remember_spoken(self, language: str) -> str:
+        detected = (language or "").strip()
+        if detected and not is_auto(detected):
+            self._spoken_lang = detected
+        return self._spoken_lang
+
+    async def _translate(self, text: str, source: str) -> str:
+        if source and same_language(source, self._dst_lang):
+            return text.strip()
+        return (await self._mt.translate(text, source, self._dst_lang)).strip()
+
+    async def _emit_local(self, text: str, *, is_final: bool, language: str = "") -> None:
         if not text:
             return
-        payload = self._subtitle(ControlType.SUBTITLE_LOCAL, text, self._src_lang, is_final)
+        payload = self._subtitle(
+            ControlType.SUBTITLE_LOCAL,
+            text,
+            language or self._spoken_lang or self._hear_lang or self._dst_lang,
+            is_final,
+        )
         log.info(
             "subtitle.emit",
             type=payload["type"],

@@ -7,13 +7,13 @@ class LanguagePickerSheet extends StatelessWidget {
     super.key,
     required this.title,
     required this.selected,
-    required this.exclude,
     required this.onPick,
+    this.exclude,
   });
 
   final String title;
   final Language selected;
-  final Language exclude;
+  final Language? exclude;
   final ValueChanged<Language> onPick;
 
   @override
@@ -50,7 +50,7 @@ class LanguagePickerSheet extends StatelessWidget {
                   itemCount: supportedLanguages.length,
                   itemBuilder: (context, i) {
                     final lang = supportedLanguages[i];
-                    final disabled = lang.bcp47 == exclude.bcp47;
+                    final disabled = exclude != null && lang.bcp47 == exclude!.bcp47;
                     final active = lang.bcp47 == selected.bcp47;
                     return ListTile(
                       enabled: !disabled,

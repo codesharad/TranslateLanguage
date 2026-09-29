@@ -10,7 +10,6 @@ import 'services/api_client.dart';
 import 'services/auth_service.dart';
 import 'state/call_controller.dart';
 import 'theme.dart';
-import 'widgets/server_switch.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,22 +47,6 @@ class _TranslateLanguageAppState extends State<TranslateLanguageApp> {
     _auth = AuthService(_api);
     _call = CallController(app: config, api: _api);
     _call.addListener(_onCallChanged);
-  }
-
-  Future<void> _retarget(bool useCloud, String cloudHost) async {
-    await AppConfig.save(useCloud: useCloud, cloudHost: cloudHost);
-    if (_call.session != null) {
-      await _call.hangup();
-    }
-    _call.removeListener(_onCallChanged);
-    _call.dispose();
-    final config = AppConfig.choose(useCloud: useCloud, cloudHost: cloudHost);
-    setState(() {
-      _config = config;
-      _restoring = true;
-      _attach(config);
-    });
-    await _restore();
   }
 
   void _onCallChanged() {
@@ -109,11 +92,7 @@ class _TranslateLanguageAppState extends State<TranslateLanguageApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ServerLink(
-      useCloud: _config.useCloud,
-      cloudHost: _config.cloudHost,
-      onChanged: _retarget,
-      child: MultiProvider(
+    return MultiProvider(
       providers: [
         Provider.value(value: _auth),
         ChangeNotifierProvider.value(value: _call),
@@ -126,7 +105,6 @@ class _TranslateLanguageAppState extends State<TranslateLanguageApp> {
         home: _restoring
             ? const Scaffold(body: Center(child: CircularProgressIndicator()))
             : (_call.userId.isEmpty ? const OtpPhoneScreen() : const HomeScreen()),
-      ),
       ),
     );
   }

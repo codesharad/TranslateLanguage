@@ -42,5 +42,15 @@ class ContactSync {
     return matches;
   }
 
+  Future<List<Contact>> invites() async {
+    final json = await _api.get('/v1/contacts/invites');
+    final registered = (json['contacts'] as List? ?? []).whereType<Map>();
+    final pending = (json['pending'] as List? ?? []).whereType<Map>();
+    return [
+      for (final row in [...registered, ...pending])
+        Contact.fromJson(Map<String, dynamic>.from(row)),
+    ];
+  }
+
   String _digits(String s) => s.replaceAll(RegExp(r'\D'), '');
 }
