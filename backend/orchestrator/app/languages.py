@@ -109,11 +109,12 @@ def same_language(left: str | None, right: str | None) -> bool:
     return (left or "").split("-")[0].lower() == (right or "").split("-")[0].lower()
 
 
-def lid_candidates(*priority: str | None, limit: int = 10) -> list[str]:
+def lid_candidates(*priority: str | None, limit: int = 10, fill: bool = True) -> list[str]:
     """Locales for Azure continuous language identification.
 
     Azure accepts at most 10 candidates, and only one locale per base language.
     Preferred languages are pinned first so a call in those languages is detected.
+    With fill=False only the priority languages are returned.
     """
     ordered: list[str] = []
     seen: set[str] = set()
@@ -133,6 +134,7 @@ def lid_candidates(*priority: str | None, limit: int = 10) -> list[str]:
 
     for code in priority:
         add(code)
-    for item in LANGUAGES:
-        add(item.stt_code)
+    if fill or not ordered:
+        for item in LANGUAGES:
+            add(item.stt_code)
     return ordered

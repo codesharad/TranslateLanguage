@@ -36,6 +36,8 @@ class CallRoom:
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
     # peer_id -> monotonic time until which that peer's mic is treated as echo.
     echo_guard_until: dict[str, float] = field(default_factory=dict)
+    # peer_id -> monotonic time when everything already queued for that peer finishes playing.
+    playback_end: dict[str, float] = field(default_factory=dict)
 
     async def add(self, peer: PeerSocket) -> None:
         async with self.lock:
@@ -56,16 +58,37 @@ class CallRoom:
                 return
             self.peers.pop(peer_id, None)
             self.echo_guard_until.pop(peer_id, None)
+            self.playback_end.pop(peer_id, None)
 
     def mark_receivers_playing(self, speaker_id: str, pcm_bytes: int, sample_rate_hz: int) -> None:
         """Ignore the listeners' mics while this speaker's audio is still coming out of their speaker."""
         seconds = pcm_bytes / float(sample_rate_hz * 2) if pcm_bytes else 0.02
-        until = time.monotonic() + seconds + ECHO_TAIL_S
+        now = time.monotonic()
         for peer_id in list(self.peers):
             if peer_id == speaker_id:
                 continue
-            if until > self.echo_guard_until.get(peer_id, 0.0):
-                self.echo_guard_until[peer_id] = until
+            # Speech is made faster than it plays, so chunks queue up on the phone. The mic stays
+            # guarded until the whole queue has played, not just this chunk.
+            end = max(now, self.playback_end.get(peer_id, 0.0)) + seconds
+            self.playback_end[peer_id] = end
+            self.echo_guard_until[peer_id] = end + ECHO_TAIL_S
+
+    def clear_playback(self, speaker_id: str) -> None:
+        """The speaker's voice was cancelled, so listeners' phones dropped what was queued."""
+        now = time.monotonic()
+        for peer_id in list(self.peers):
+            if peer_id != speaker_id:
+                self.playback_end[peer_id] = now
+                self.echo_guard_until[peer_id] = now + ECHO_TAIL_S
+
+    def audible_elsewhere(self, speaker_id: str) -> bool:
+        """True while this speaker's audio is still playing on another phone."""
+        now = time.monotonic()
+        return any(
+            now < end + ECHO_TAIL_S
+            for peer_id, end in self.playback_end.items()
+            if peer_id != speaker_id
+        )
 
     def uplink_is_echo(self, peer_id: str) -> bool:
         return time.monotonic() < self.echo_guard_until.get(peer_id, 0.0)

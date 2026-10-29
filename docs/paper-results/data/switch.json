@@ -1,0 +1,242 @@
+[
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "What time does the meeting start tomorrow?",
+  "ref": "What time does the meeting start tomorrow?",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "What time does the meeting start tomorrow?",
+  "ref": "What time does the meeting start tomorrow?",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "The doctor said I should rest for 3 days.",
+  "ref": "The doctor said I should rest for three days.",
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "व्हाट टाइम डज़ द मीटिंग स्टार्ट टुमॉरो।",
+  "ref": "What time does the meeting start tomorrow?",
+  "wer": 1.0,
+  "cer": 1.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "The doctor said I should rest for 3 days.",
+  "ref": "The doctor said I should rest for three days.",
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "द डॉक्टर सैड आई शुड रेस्ट फॉर थ्री डेज।",
+  "ref": "The doctor said I should rest for three days.",
+  "wer": 1.0,
+  "cer": 1.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "Could you repeat that a little more slowly?",
+  "ref": "Could you repeat that a little more slowly?",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "Could you repeat that a little more slowly?",
+  "ref": "Could you repeat that a little more slowly?",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "कूड यू रिपीट दैट ये लिटिल मोर स्लोली?",
+  "ref": "Could you repeat that a little more slowly?",
+  "wer": 1.0,
+  "cer": 1.0
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "We booked 2 tickets for the evening.",
+  "ref": "We booked two tickets for the evening train.",
+  "wer": 0.25,
+  "cer": 0.2222222222222222
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "We booked 2 tickets for the evening train.",
+  "ref": "We booked two tickets for the evening train.",
+  "wer": 0.125,
+  "cer": 0.08333333333333333
+ },
+ {
+  "first": "hi-IN",
+  "second": "en-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "वी बुक्ड टू टिकट्स फॉर द इवनिंग ट्रेन।",
+  "ref": "We booked two tickets for the evening train.",
+  "wer": 1.0,
+  "cer": 1.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "उद्या मीटिंग किती वाजता सुरू होईल?",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "उद्या मीटिंग किती वाजता सुरू होईल?",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "Udaya meeting kiti vajta shuru hoi.",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "wer": 1.0,
+  "cer": 1.0357142857142858
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "Doctoranni mala sangitale Ki me teen Divas mishranti ghetali pahije.",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "wer": 1.0,
+  "cer": 1.1153846153846154
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल.",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "wer": 0.1111111111111111,
+  "cer": 0.0625
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "Aapr TE thode haru haru punha sangu shak.",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "wer": 1.0,
+  "cer": 1.03125
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 0.3,
+  "switched": true,
+  "hyp": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "wer": 0.0,
+  "cer": 0.0
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": true,
+  "hyp": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढ.",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "wer": 0.16666666666666666,
+  "cer": 0.05263157894736842
+ },
+ {
+  "first": "en-IN",
+  "second": "mr-IN",
+  "gap_s": 1.0,
+  "switched": false,
+  "hyp": "Aamhi sandhyakarcha gadichi Don tikite kad.",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "wer": 1.0,
+  "cer": 1.0
+ }
+]

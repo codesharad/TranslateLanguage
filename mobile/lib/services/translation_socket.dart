@@ -148,6 +148,14 @@ class TranslationSocket {
     });
   }
 
+  /// The language this phone's user now speaks. The server recognizes speech in that language.
+  void setHearLanguage(String bcp47) {
+    _sendJson({
+      'type': 'languages.set',
+      'hear_lang': bcp47,
+    });
+  }
+
   void _sendJson(Map<String, dynamic> message) {
     try {
       _channel?.sink.add(jsonEncode(message));

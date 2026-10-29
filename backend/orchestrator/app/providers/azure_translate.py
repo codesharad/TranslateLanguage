@@ -20,8 +20,10 @@ class AzureTranslator(Translator):
         self._key = settings.azure_translator_key
         self._region = settings.azure_translator_region
         self._cache: dict[tuple[str, str, str], str] = {}
+        # DNS inside Docker alone can take 300 ms, so a 0.4 s connect limit failed often.
         self._client = httpx.AsyncClient(
-            timeout=httpx.Timeout(1.5, connect=0.4),
+            timeout=httpx.Timeout(6.0, connect=3.0),
+            limits=httpx.Limits(keepalive_expiry=120.0),
         )
         self._inflight: dict[tuple[str, str, str], asyncio.Task[str]] = {}
 
@@ -59,12 +61,19 @@ class AzureTranslator(Translator):
             "Ocp-Apim-Subscription-Region": self._region,
             "Content-Type": "application/json",
         }
-        response = await self._client.post(
-            f"{self._endpoint}/translate",
-            params=params,
-            headers=headers,
-            json=[{"text": text}],
-        )
+        for attempt in (1, 2):
+            try:
+                response = await self._client.post(
+                    f"{self._endpoint}/translate",
+                    params=params,
+                    headers=headers,
+                    json=[{"text": text}],
+                )
+                break
+            except httpx.TransportError as exc:
+                if attempt == 2:
+                    raise
+                log.warning("translate.retry", error=type(exc).__name__)
         response.raise_for_status()
         out = response.json()[0]["translations"][0]["text"]
         target = lookup(dst)

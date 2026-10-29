@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_callkit_incoming/entities/entities.dart' show CallEvent, Event;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -55,6 +56,7 @@ class CallController extends ChangeNotifier {
   /// Set by the app shell. Called when the server rejects the saved login.
   Future<void> Function()? onAuthRejected;
 
+  StreamSubscription<CallEvent?>? _callkitEvents;
   SignalingService? _signaling;
   WebrtcCallService? _webrtc;
   TranslationSocket? _media;
@@ -119,9 +121,10 @@ class CallController extends ChangeNotifier {
       pushToken: null,
       language: src.bcp47,
     );
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      callkit.events.listen(_onCallkitEvent);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      unawaited(callkit.requestAndroidPermissions());
     }
+    _callkitEvents ??= callkit.events.listen(_onCallkitEvent);
   }
 
   Future<void> syncContacts() async {
@@ -163,6 +166,7 @@ class CallController extends ChangeNotifier {
     if (session != null) session!.srcLang = language.bcp47;
     notifyListeners();
     _rememberLanguages();
+    _media?.setHearLanguage(language.bcp47);
     _signaling?.setPreferredLanguage(callId: session?.callId, hearLang: language.bcp47);
   }
 
@@ -463,25 +467,31 @@ class CallController extends ChangeNotifier {
     dst = languageByCode(session!.dstLang);
     session!.phase = CallPhase.ringing;
     lastError = null;
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      try {
-        await callkit.showIncoming(callId: callId, callerName: name, handle: from);
-      } catch (e) {
-        debugPrint('callkit incoming $e');
-      }
+    // Native incoming-call screen: rings, vibrates and lights up a locked screen.
+    try {
+      await callkit.showIncoming(callId: callId, callerName: name, handle: from);
+    } catch (e) {
+      debugPrint('callkit incoming $e');
     }
     notifyListeners();
   }
 
-  Future<void> _onCallkitEvent(dynamic event) async {
+  Future<void> _onCallkitEvent(CallEvent? event) async {
     final type = event?.event;
-    if (type.toString().contains('ACTION_CALL_ACCEPT')) {
+    if (type == Event.actionCallAccept) {
       final callId = session?.callId;
-      if (callId != null) {
+      if (callId != null && !_answering) {
+        _answering = true;
+        session?.phase = CallPhase.connecting;
+        notifyListeners();
         _signaling?.accept(callId);
-        await _startMedia(asOfferer: false);
+        try {
+          await _startMedia(asOfferer: false);
+        } finally {
+          _answering = false;
+        }
       }
-    } else if (type.toString().contains('ACTION_CALL_DECLINE')) {
+    } else if (type == Event.actionCallDecline) {
       await hangup();
     }
     // Ignore ACTION_CALL_ENDED on Android: ConnectionService fires it
@@ -495,6 +505,7 @@ class CallController extends ChangeNotifier {
     session?.phase = CallPhase.connecting;
     notifyListeners();
     _signaling?.accept(callId);
+    unawaited(callkit.endAll().catchError((_) {}));
     try {
       await _startMedia(asOfferer: false);
     } catch (e, st) {
@@ -638,8 +649,16 @@ class CallController extends ChangeNotifier {
     if (text.isEmpty) return;
     final bcp = (json['bcp47'] as String?) ?? _bcp47(json['language'] as String?);
     final id = json['utterance_id'] as String? ?? '';
+    // With no id from the server, keep updating this side's open line instead of adding one
+    // per partial result.
+    var key = id.isEmpty ? '' : '$type:$id';
+    if (key.isEmpty) {
+      final open = transcripts.lastIndexWhere((t) => t.utteranceId.startsWith('$type#'));
+      final reuse = open >= 0 && !transcripts[open].isFinal;
+      key = reuse ? transcripts[open].utteranceId : '$type#${DateTime.now().microsecondsSinceEpoch}';
+    }
     final line = TranscriptLine(
-      utteranceId: id.isEmpty ? '${type}_${transcripts.length}' : '$type:$id',
+      utteranceId: key,
       fromPeer: type == 'subtitle_remote',
       sourceText: text,
       translatedText: '',
@@ -691,6 +710,7 @@ class CallController extends ChangeNotifier {
   }
 
   Future<void> _teardown() async {
+    unawaited(callkit.endAll().catchError((_) {}));
     await _capture?.stop();
     await playback.stop();
     await _media?.close();

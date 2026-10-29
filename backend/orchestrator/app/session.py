@@ -21,7 +21,7 @@ from app.hub import CallRoom
 from app.audio.pcm import LatencyProbe, now_ms
 from app.audio.vad import EndpointingVad
 from app.config import Settings
-from app.languages import is_auto, same_language, voice_for
+from app.languages import is_auto, lookup, same_language, voice_for
 from app.pipeline.base import SttPartial
 from app.providers.factory import build_stt, build_translator, build_tts
 from app.protocol import (
@@ -65,6 +65,9 @@ class TranslationLeg:
         self._seq_out = 0
         self._last_partial = ""
         self._probe: LatencyProbe | None = None
+        # True once the current sentence is finished. The next sentence then gets a new id,
+        # even while the voice for the previous one is still playing.
+        self._utt_closed = False
         raw_src = (start.src_lang or "").strip()
         self._hear_lang = (start.hear_lang or "").strip()
         if not self._hear_lang and not is_auto(raw_src):
@@ -80,7 +83,13 @@ class TranslationLeg:
 
     async def run(self) -> None:
         self._stt.prepare_detection(self._hear_lang, self._dst_lang)
-        if self._settings.resolved_stt() == "azure":
+        own = lookup(self._hear_lang)
+        if own and self._settings.resolved_stt() == "azure":
+            # Each phone's language is known, so recognize only that. Guessing between the two
+            # languages heard Hindi as English and the reverse, and echoes as the wrong language.
+            self._spoken_lang = own.stt_code
+            await self._stt.start(own.stt_code)
+        elif self._settings.resolved_stt() == "azure":
             await self._stt.start("auto")
         else:
             await self._stt.start(self._hear_lang or self._dst_lang or "en-IN")
@@ -134,9 +143,11 @@ class TranslationLeg:
                     if self._room.uplink_is_echo(self._start.peer_id):
                         log.debug("echo.drop", speaker_id=self._start.peer_id, tag=frame.speaker_tag)
                         continue
+                    if self._settings.crosstalk_guard and self._room.audible_elsewhere(self._start.peer_id):
+                        continue
                     await self._stt.push_pcm(frame.pcm)
                     tts_busy = self._tts_task is not None and not self._tts_task.done()
-                    if not tts_busy and frame.pcm:
+                    if self._settings.relay_original_voice and not tts_busy and frame.pcm:
                         await self._relay_pcm(frame.pcm)
                     started, ended, _ = self._vad.push(frame.pcm)
                     if started:
@@ -144,8 +155,7 @@ class TranslationLeg:
                     if started and self._settings.barge_in:
                         await self._cancel_tts()
                     if ended:
-                        if self._probe is None:
-                            self._probe = LatencyProbe(utterance_id=uuid.uuid4().hex[:12])
+                        self._begin_utterance()
                         self._probe.mark("vad_end")
                     continue
                 text = message.get("text")
@@ -192,10 +202,27 @@ class TranslationLeg:
             return
         if payload.get("type") != ControlType.LANGUAGES_SET:
             return
+        hear = payload.get("hear_lang") or ""
+        if hear and not is_auto(hear):
+            await self.set_hear_language(hear)
         dst = payload.get("dst_lang") or ""
         if not dst or is_auto(dst):
             return
         await self.set_target_language(dst)
+
+    async def set_hear_language(self, hear: str) -> None:
+        """This phone's user switched the language they speak: recognize that language now."""
+        own = lookup(hear)
+        if own is None or own.stt_code == self._hear_lang or same_language(own.stt_code, self._hear_lang):
+            return
+        self._hear_lang = own.stt_code
+        self._spoken_lang = own.stt_code
+        self._start.hear_lang = own.stt_code
+        log.info("languages.hear", hear=own.stt_code, call_id=self._start.call_id, peer=self._start.peer_id)
+        switch = getattr(self._stt, "switch_language", None)
+        if switch is not None and self._settings.resolved_stt() == "azure":
+            self._utt_closed = True
+            await switch(own.stt_code)
 
     async def set_target_language(self, dst: str) -> None:
         """Point translation and TTS at the listener's preferred language.
@@ -213,7 +240,12 @@ class TranslationLeg:
 
     async def _pump_stt(self) -> None:
         async for partial in self._stt.results():
-            await self._on_stt(partial)
+            try:
+                await self._on_stt(partial)
+            except Exception:
+                # One failed translation must not end captions for the rest of the call.
+                log.exception("stt.handle_failed", peer=self._start.peer_id)
+                self._utt_closed = True
 
     async def _on_stt(self, partial: SttPartial) -> None:
         text = (partial.text or "").strip()
@@ -233,8 +265,7 @@ class TranslationLeg:
             language=partial.language,
         )
 
-        if self._probe is None:
-            self._probe = LatencyProbe(utterance_id=uuid.uuid4().hex[:12])
+        self._begin_utterance()
         if self._probe.stt_first_partial is None:
             self._probe.mark("stt_first_partial")
 
@@ -246,16 +277,23 @@ class TranslationLeg:
             return
 
         self._probe.mark("stt_final")
+        self._mt_seq += 1  # a late partial translation must not overwrite the final one
         self._last_partial = ""
         await self._emit_local(partial.text, is_final=True, language=source)
         translated = await self._translate(partial.text, source)
         self._probe.mark("mt_done")
         if translated:
             await self._emit_remote(translated, is_final=True)
-            await self._speak(translated, committed=True)
+            self._utt_closed = True
+            await self._speak(translated, committed=True, probe=self._probe)
         else:
             log.info("subtitle.untranslated", text=partial.text, src=source, dst=self._dst_lang)
-            self._probe = None
+            self._utt_closed = True
+
+    def _begin_utterance(self) -> None:
+        if self._probe is None or self._utt_closed:
+            self._probe = LatencyProbe(utterance_id=uuid.uuid4().hex[:12])
+            self._utt_closed = False
 
     def _schedule_partial_mt(self, text: str) -> None:
         if not self._settings.partial_translate or not text.strip():
@@ -336,6 +374,7 @@ class TranslationLeg:
         self._tts_generation += 1
         if self._tts_task and not self._tts_task.done():
             self._tts_task.cancel()
+            self._room.clear_playback(self._start.peer_id)
             await self._send_to_peer(
                 dumps(
                     {
@@ -347,7 +386,7 @@ class TranslationLeg:
                 )
             )
 
-    async def _speak(self, text: str, committed: bool) -> None:
+    async def _speak(self, text: str, committed: bool, probe: LatencyProbe | None = None) -> None:
         if not text:
             return
         self._tts_generation += 1
@@ -365,12 +404,14 @@ class TranslationLeg:
                 )
             )
         self._tts_task = asyncio.create_task(
-            self._tts_loop(text, generation, committed),
+            self._tts_loop(text, generation, committed, probe),
             name="tts",
         )
 
-    async def _tts_loop(self, text: str, generation: int, committed: bool) -> None:
-        utterance_id = self._probe.utterance_id if self._probe else ""
+    async def _tts_loop(
+        self, text: str, generation: int, committed: bool, probe: LatencyProbe | None = None
+    ) -> None:
+        utterance_id = probe.utterance_id if probe else ""
         if self._settings.half_duplex:
             await self._send_to_peer(
                 dumps({"type": ControlType.DUCK, "call_id": self._start.call_id, "duck": True})
@@ -391,15 +432,15 @@ class TranslationLeg:
             async for pcm in self._tts.stream_pcm(text, self._dst_lang, voice_for(self._dst_lang)):
                 if generation != self._tts_generation:
                     return
-                if first and self._probe:
-                    self._probe.mark("tts_first_byte")
+                if first and probe:
+                    probe.mark("tts_first_byte")
                     await self._send_local(
                         dumps(
                             {
                                 "type": ControlType.LATENCY,
                                 "call_id": self._start.call_id,
                                 "utterance_id": utterance_id,
-                                "stages_ms": self._probe.stages_ms(),
+                                "stages_ms": probe.stages_ms(),
                                 "server_now_ms": now_ms(),
                             }
                         )
@@ -434,5 +475,4 @@ class TranslationLeg:
                 await self._send_to_peer(
                     dumps({"type": ControlType.DUCK, "call_id": self._start.call_id, "duck": False})
                 )
-            if committed:
-                self._probe = None
+            # The probe is not cleared here: the next sentence may already be in progress.

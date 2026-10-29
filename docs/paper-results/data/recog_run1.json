@@ -1,0 +1,2116 @@
+[
+ {
+  "lang": "en-IN",
+  "idx": 1,
+  "mode": "fixed",
+  "ref": "Can you hear me clearly?",
+  "hyp": "Can you hear me clearly?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 0,
+  "mode": "fixed",
+  "ref": "Hello, my name is Sharad and I am calling from Delhi.",
+  "hyp": "Hello my name is Sharad and I am calling from Delhi.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 2,
+  "mode": "fixed",
+  "ref": "I will reach the station in about twenty minutes.",
+  "hyp": "I will reach the station in about 20 minutes.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.15,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 3,
+  "mode": "fixed",
+  "ref": "Please send me the address of the hospital.",
+  "hyp": "Please send me the address of the hospital.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 4,
+  "mode": "fixed",
+  "ref": "What time does the meeting start tomorrow?",
+  "hyp": "What time does the meeting start tomorrow?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 5,
+  "mode": "fixed",
+  "ref": "The doctor said I should rest for three days.",
+  "hyp": "The doctor said I should rest for 3 days.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 6,
+  "mode": "fixed",
+  "ref": "Could you repeat that a little more slowly?",
+  "hyp": "Could you repeat that a little more slowly?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 7,
+  "mode": "fixed",
+  "ref": "We booked two tickets for the evening train.",
+  "hyp": "We booked 2 tickets for the evening.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.25,
+  "cer": 0.2222222222222222,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 8,
+  "mode": "fixed",
+  "ref": "My phone number ends with four seven two nine.",
+  "hyp": "My phone number ends with 479.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.43243243243243246,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 9,
+  "mode": "fixed",
+  "ref": "Thank you for your help, I really appreciate it.",
+  "hyp": "Thank you for your help. I really appreciate it.",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 0,
+  "mode": "fixed",
+  "ref": "हैलो, मेरा नाम शरद है और मैं दिल्ली से फोन कर रहा हूं",
+  "hyp": "हैलो। मेरा नाम शरद है और मैं दिल्ली से फ़ोन कर रहा हूँ।",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.15384615384615385,
+  "cer": 0.05,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 1,
+  "mode": "fixed",
+  "ref": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं",
+  "hyp": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 3,
+  "mode": "fixed",
+  "ref": "कृपया मुझे अस्पताल का पता भेजें",
+  "hyp": "कृपया मुझे अस्पताल का पता भेजें।",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 2,
+  "mode": "fixed",
+  "ref": "मैं लगभग बीस मिनट में स्टेशन पहुंच जाऊंगा",
+  "hyp": "मैं लगभग 20 मिनट में स्टेशन पहुँच जाऊंगा।",
+  "langs": [
+   ""
+  ],
+  "wer": 0.25,
+  "cer": 0.11764705882352941,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 4,
+  "mode": "fixed",
+  "ref": "कल बैठक किस बजे शुरू होगी",
+  "hyp": "कल बैठक किस बजे शुरू होगी?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 5,
+  "mode": "fixed",
+  "ref": "डॉक्टर ने कहा कि मुझे तीन दिन आराम करना चाहिए",
+  "hyp": "डॉक्टर ने कहा कि मुझे 3 दिन आराम करना चाहिए।",
+  "langs": [
+   ""
+  ],
+  "wer": 0.1,
+  "cer": 0.08333333333333333,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 6,
+  "mode": "fixed",
+  "ref": "क्या आप इसे थोड़ा और धीरे-धीरे दोहरा सकते हैं",
+  "hyp": "क्या आप इसे थोड़ा और धीरेधीरे दोहरा सकते हैं?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.2,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 7,
+  "mode": "fixed",
+  "ref": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए",
+  "hyp": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए।",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 8,
+  "mode": "fixed",
+  "ref": "मेरा फोन नंबर चार सात दो नौ के साथ समाप्त होता है",
+  "hyp": "मेरा फ़ोन नंबर 4729 के साथ समाप्त होता है।",
+  "langs": [
+   ""
+  ],
+  "wer": 0.4166666666666667,
+  "cer": 0.2894736842105263,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 9,
+  "mode": "fixed",
+  "ref": "आपकी मदद के लिए धन्यवाद, मैं वास्तव में इसकी सराहना करता हूं",
+  "hyp": "आपकी मदद के लिए धन्यवाद। मैं वास्तव में इसकी सराहना करता हूँ।",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.08333333333333333,
+  "cer": 0.020833333333333332,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 1,
+  "mode": "fixed",
+  "ref": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "hyp": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 0,
+  "mode": "fixed",
+  "ref": "हॅलो, माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "hyp": "हॅलो माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 2,
+  "mode": "fixed",
+  "ref": "मी सुमारे वीस मिनिटांत स्टेशनवर पोहोचेन.",
+  "hyp": "मी सुमारे 20 मिनिटांत स्टेशनवर पोहचेन.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.3333333333333333,
+  "cer": 0.11764705882352941,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 3,
+  "mode": "fixed",
+  "ref": "कृपया मला रुग्णालयाचा पत्ता पाठवा",
+  "hyp": "कृपया मला रुग्णालयाचा पत्ता पाठवा.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 4,
+  "mode": "fixed",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "hyp": "उद्या मीटिंग किती वाजता सुरू होईल?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 5,
+  "mode": "fixed",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "hyp": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 6,
+  "mode": "fixed",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "hyp": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 7,
+  "mode": "fixed",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "hyp": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 8,
+  "mode": "fixed",
+  "ref": "माझा फोन नंबर चार सात दोन नऊ सह संपतो",
+  "hyp": "माझा फोन नंबर 4729 सह संपतो.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.3793103448275862,
+  "lang_ok": null
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 9,
+  "mode": "fixed",
+  "ref": "आपल्या मदतीबद्दल धन्यवाद, मी खरोखर त्याचे कौतुक करतो",
+  "hyp": "आपल्या मदतीबद्दल धन्यवाद. मी खरोखर त्याचे कौतुक करतो.",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 0,
+  "mode": "fixed",
+  "ref": "வணக்கம், என் பெயர் ஷரத், நான் டெல்லியில் இருந்து அழைக்கிறேன்",
+  "hyp": "வணக்கம். என் பெயர் ஷரத். நான் டெல்லியில் இருந்து அழைக்கிறேன்.",
+  "langs": [
+   "",
+   "",
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 1,
+  "mode": "fixed",
+  "ref": "நான் சொல்வதை உன்னால் தெளிவாகக் கேட்க முடிகிறதா",
+  "hyp": "நான் சொல்வதை உன்னால். தெளிவாக கேட்க முடிகிறதா?",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.04878048780487805,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 3,
+  "mode": "fixed",
+  "ref": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்",
+  "hyp": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 2,
+  "mode": "fixed",
+  "ref": "நான் சுமார் இருபது நிமிடங்களில் நிலையத்தை அடைவேன்",
+  "hyp": "நான் சுமார் 20 நிமிடங்களில் நிலையத்தை அடைவேன்.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.13636363636363635,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 4,
+  "mode": "fixed",
+  "ref": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது",
+  "hyp": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 5,
+  "mode": "fixed",
+  "ref": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்",
+  "hyp": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 6,
+  "mode": "fixed",
+  "ref": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா",
+  "hyp": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா?",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 7,
+  "mode": "fixed",
+  "ref": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்",
+  "hyp": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 8,
+  "mode": "fixed",
+  "ref": "எனது தொலைபேசி எண் நான்கு ஏழு இரண்டு ஒன்பது உடன் முடிவடைகிறது",
+  "hyp": "எனது தொலைபேசி எண் 4729 உடன் முடிவடைகிறது.",
+  "langs": [
+   ""
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.40384615384615385,
+  "lang_ok": null
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 9,
+  "mode": "fixed",
+  "ref": "உங்கள் உதவிக்கு நன்றி, நான் அதை மிகவும் பாராட்டுகிறேன்",
+  "hyp": "உங்கள் உதவிக்கு நன்றி. நான் அதை மிகவும் பாராட்டுகிறேன்.",
+  "langs": [
+   "",
+   ""
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 1,
+  "mode": "pinned",
+  "ref": "Can you hear me clearly?",
+  "hyp": "Can you hear me clearly?",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 0,
+  "mode": "pinned",
+  "ref": "Hello, my name is Sharad and I am calling from Delhi.",
+  "hyp": "Hello my name is Sharad and I am calling from Delhi.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 2,
+  "mode": "pinned",
+  "ref": "I will reach the station in about twenty minutes.",
+  "hyp": "I will reach the station in about 20 minutes.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.15,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 3,
+  "mode": "pinned",
+  "ref": "Please send me the address of the hospital.",
+  "hyp": "Please send me the address of the hospital.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 4,
+  "mode": "pinned",
+  "ref": "What time does the meeting start tomorrow?",
+  "hyp": "What time does the meeting start tomorrow?",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 5,
+  "mode": "pinned",
+  "ref": "The doctor said I should rest for three days.",
+  "hyp": "The doctor said I should rest for 3 days.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 6,
+  "mode": "pinned",
+  "ref": "Could you repeat that a little more slowly?",
+  "hyp": "Could you repeat that a little more slowly?",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 7,
+  "mode": "pinned",
+  "ref": "We booked two tickets for the evening train.",
+  "hyp": "We booked 2 tickets for the evening. तीन।",
+  "langs": [
+   "en-IN",
+   "hi-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.2222222222222222,
+  "lang_ok": false
+ },
+ {
+  "lang": "en-IN",
+  "idx": 8,
+  "mode": "pinned",
+  "ref": "My phone number ends with four seven two nine.",
+  "hyp": "My phone number ends with 479.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.43243243243243246,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 9,
+  "mode": "pinned",
+  "ref": "Thank you for your help, I really appreciate it.",
+  "hyp": "Thank you for your help. I really appreciate it.",
+  "langs": [
+   "en-IN",
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 1,
+  "mode": "pinned",
+  "ref": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं",
+  "hyp": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 0,
+  "mode": "pinned",
+  "ref": "हैलो, मेरा नाम शरद है और मैं दिल्ली से फोन कर रहा हूं",
+  "hyp": "Hello, Mera. नाम शरद है और मैं दिल्ली से फ़ोन कर रहा हूँ।",
+  "langs": [
+   "en-IN",
+   "hi-IN"
+  ],
+  "wer": 0.3076923076923077,
+  "cer": 0.275,
+  "lang_ok": false
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 3,
+  "mode": "pinned",
+  "ref": "कृपया मुझे अस्पताल का पता भेजें",
+  "hyp": "कृपया मुझे अस्पताल का पता भेजें।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 2,
+  "mode": "pinned",
+  "ref": "मैं लगभग बीस मिनट में स्टेशन पहुंच जाऊंगा",
+  "hyp": "मैं लगभग 20 मिनट में स्टेशन पहुँच जाऊंगा।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.11764705882352941,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 4,
+  "mode": "pinned",
+  "ref": "कल बैठक किस बजे शुरू होगी",
+  "hyp": "कल बैठक किस बजे शुरू होगी?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 5,
+  "mode": "pinned",
+  "ref": "डॉक्टर ने कहा कि मुझे तीन दिन आराम करना चाहिए",
+  "hyp": "डॉक्टर ने कहा कि मुझे 3 दिन आराम करना चाहिए।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.1,
+  "cer": 0.08333333333333333,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 6,
+  "mode": "pinned",
+  "ref": "क्या आप इसे थोड़ा और धीरे-धीरे दोहरा सकते हैं",
+  "hyp": "क्या आप इसे थोड़ा और धीरेधीरे दोहरा सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.2,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 8,
+  "mode": "pinned",
+  "ref": "मेरा फोन नंबर चार सात दो नौ के साथ समाप्त होता है",
+  "hyp": "मेरा फ़ोन नंबर 4729 के साथ समाप्त होता है।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.4166666666666667,
+  "cer": 0.2894736842105263,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 7,
+  "mode": "pinned",
+  "ref": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए",
+  "hyp": "",
+  "langs": [],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 9,
+  "mode": "pinned",
+  "ref": "आपकी मदद के लिए धन्यवाद, मैं वास्तव में इसकी सराहना करता हूं",
+  "hyp": "आपकी मदद के लिए धन्यवाद। मैं वास्तव में इसकी सराहना करता हूँ।",
+  "langs": [
+   "hi-IN",
+   "hi-IN"
+  ],
+  "wer": 0.08333333333333333,
+  "cer": 0.020833333333333332,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 0,
+  "mode": "pinned",
+  "ref": "हॅलो, माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "hyp": "हॅलो माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 1,
+  "mode": "pinned",
+  "ref": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "hyp": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 2,
+  "mode": "pinned",
+  "ref": "मी सुमारे वीस मिनिटांत स्टेशनवर पोहोचेन.",
+  "hyp": "मी सुमारे 20 मिनिटांत स्टेशनवर पोहचेन.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.3333333333333333,
+  "cer": 0.11764705882352941,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 3,
+  "mode": "pinned",
+  "ref": "कृपया मला रुग्णालयाचा पत्ता पाठवा",
+  "hyp": "कृपया मला रुग्णालयाचा पत्ता पाठवा.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 4,
+  "mode": "pinned",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "hyp": "उद्या मीटिंग किती वाजता सुरू होईल?",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 6,
+  "mode": "pinned",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "hyp": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 5,
+  "mode": "pinned",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "hyp": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 8,
+  "mode": "pinned",
+  "ref": "माझा फोन नंबर चार सात दोन नऊ सह संपतो",
+  "hyp": "माझा फोन नंबर 4729 सह संपतो.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.3793103448275862,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 7,
+  "mode": "pinned",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "hyp": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 9,
+  "mode": "pinned",
+  "ref": "आपल्या मदतीबद्दल धन्यवाद, मी खरोखर त्याचे कौतुक करतो",
+  "hyp": "आपल्या मदतीबद्दल धन्यवाद. मी खरोखर त्याचे कौतुक करतो.",
+  "langs": [
+   "mr-IN",
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 0,
+  "mode": "pinned",
+  "ref": "வணக்கம், என் பெயர் ஷரத், நான் டெல்லியில் இருந்து அழைக்கிறேன்",
+  "hyp": "வணக்கம். என் பெயர் ஷரத். நான் டெல்லியில் இருந்து அழைக்கிறேன்.",
+  "langs": [
+   "ta-IN",
+   "ta-IN",
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 1,
+  "mode": "pinned",
+  "ref": "நான் சொல்வதை உன்னால் தெளிவாகக் கேட்க முடிகிறதா",
+  "hyp": "நான் சொல்வதை உன்னால். தெளிவாக கேட்க முடிகிறதா?",
+  "langs": [
+   "ta-IN",
+   "ta-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.04878048780487805,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 2,
+  "mode": "pinned",
+  "ref": "நான் சுமார் இருபது நிமிடங்களில் நிலையத்தை அடைவேன்",
+  "hyp": "நான் சுமார் 20 நிமிடங்களில் நிலையத்தை அடைவேன்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.13636363636363635,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 3,
+  "mode": "pinned",
+  "ref": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்",
+  "hyp": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 4,
+  "mode": "pinned",
+  "ref": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது",
+  "hyp": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 6,
+  "mode": "pinned",
+  "ref": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா",
+  "hyp": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 5,
+  "mode": "pinned",
+  "ref": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்",
+  "hyp": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 7,
+  "mode": "pinned",
+  "ref": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்",
+  "hyp": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 8,
+  "mode": "pinned",
+  "ref": "எனது தொலைபேசி எண் நான்கு ஏழு இரண்டு ஒன்பது உடன் முடிவடைகிறது",
+  "hyp": "எனது தொலைபேசி எண் 4729 உடன் முடிவடைகிறது.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.40384615384615385,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 9,
+  "mode": "pinned",
+  "ref": "உங்கள் உதவிக்கு நன்றி, நான் அதை மிகவும் பாராட்டுகிறேன்",
+  "hyp": "உங்கள் உதவிக்கு நன்றி. நான் அதை மிகவும் பாராட்டுகிறேன்.",
+  "langs": [
+   "ta-IN",
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 0,
+  "mode": "pinned_filled",
+  "ref": "Hello, my name is Sharad and I am calling from Delhi.",
+  "hyp": "Hallo. Mein Name ist Sharad an i am called from day.",
+  "langs": [
+   "de-DE",
+   "de-DE"
+  ],
+  "wer": 0.5454545454545454,
+  "cer": 0.3170731707317073,
+  "lang_ok": false
+ },
+ {
+  "lang": "en-IN",
+  "idx": 1,
+  "mode": "pinned_filled",
+  "ref": "Can you hear me clearly?",
+  "hyp": "",
+  "langs": [],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 2,
+  "mode": "pinned_filled",
+  "ref": "I will reach the station in about twenty minutes.",
+  "hyp": "I will reach the station in about 20 minutes.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.15,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 3,
+  "mode": "pinned_filled",
+  "ref": "Please send me the address of the hospital.",
+  "hyp": "Please send me the address of the hospital.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 4,
+  "mode": "pinned_filled",
+  "ref": "What time does the meeting start tomorrow?",
+  "hyp": "What time does the meeting start tomorrow?",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 5,
+  "mode": "pinned_filled",
+  "ref": "The doctor said I should rest for three days.",
+  "hyp": "The doctor said I should rest for 3 days.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 6,
+  "mode": "pinned_filled",
+  "ref": "Could you repeat that a little more slowly?",
+  "hyp": "కుడ్ యు రిపీట్ దట్ ఎ లిటిల్ మోర్ స్లోలీ.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "en-IN",
+  "idx": 7,
+  "mode": "pinned_filled",
+  "ref": "We booked two tickets for the evening train.",
+  "hyp": "We booked 2 tickets for the evening.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.2222222222222222,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 8,
+  "mode": "pinned_filled",
+  "ref": "My phone number ends with four seven two nine.",
+  "hyp": "My phone number ends with 479.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.43243243243243246,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 9,
+  "mode": "pinned_filled",
+  "ref": "Thank you for your help, I really appreciate it.",
+  "hyp": "Thank you for your help. I really appreciate it.",
+  "langs": [
+   "en-IN",
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 0,
+  "mode": "pinned_filled",
+  "ref": "हैलो, मेरा नाम शरद है और मैं दिल्ली से फोन कर रहा हूं",
+  "hyp": "हैलो। मेरा नाम शरद है और मैं दिल्ली से फ़ोन कर रहा हूँ।",
+  "langs": [
+   "hi-IN",
+   "hi-IN"
+  ],
+  "wer": 0.15384615384615385,
+  "cer": 0.05,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 1,
+  "mode": "pinned_filled",
+  "ref": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं",
+  "hyp": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 2,
+  "mode": "pinned_filled",
+  "ref": "मैं लगभग बीस मिनट में स्टेशन पहुंच जाऊंगा",
+  "hyp": "मैं लगभग 20 मिनट में स्टेशन पहुँच जाऊंगा।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.11764705882352941,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 3,
+  "mode": "pinned_filled",
+  "ref": "कृपया मुझे अस्पताल का पता भेजें",
+  "hyp": "कृपया मुझे अस्पताल का पता भेजें।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 4,
+  "mode": "pinned_filled",
+  "ref": "कल बैठक किस बजे शुरू होगी",
+  "hyp": "कल बैठक किस बजे सुरू होगी?",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.05,
+  "lang_ok": false
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 5,
+  "mode": "pinned_filled",
+  "ref": "डॉक्टर ने कहा कि मुझे तीन दिन आराम करना चाहिए",
+  "hyp": "डॉक्टर ने कहा कि मुझे 3 दिन आराम करना चाहिए।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.1,
+  "cer": 0.08333333333333333,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 6,
+  "mode": "pinned_filled",
+  "ref": "क्या आप इसे थोड़ा और धीरे-धीरे दोहरा सकते हैं",
+  "hyp": "क्या आप इसे थोड़ा और धीरेधीरे दोहरा सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.2,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 7,
+  "mode": "pinned_filled",
+  "ref": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए",
+  "hyp": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 8,
+  "mode": "pinned_filled",
+  "ref": "मेरा फोन नंबर चार सात दो नौ के साथ समाप्त होता है",
+  "hyp": "మేరా ఫోన్ నంబర్ చార్ సాత్ లో నౌ కె. सात समाप्त होता है।",
+  "langs": [
+   "te-IN",
+   "hi-IN"
+  ],
+  "wer": 0.75,
+  "cer": 0.7368421052631579,
+  "lang_ok": false
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 9,
+  "mode": "pinned_filled",
+  "ref": "आपकी मदद के लिए धन्यवाद, मैं वास्तव में इसकी सराहना करता हूं",
+  "hyp": "आपकी मदद के लिए धन्यवाद। मैं वास्तव में इसकी सराहना करता हूँ।",
+  "langs": [
+   "hi-IN",
+   "hi-IN"
+  ],
+  "wer": 0.08333333333333333,
+  "cer": 0.020833333333333332,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 0,
+  "mode": "pinned_filled",
+  "ref": "हॅलो, माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "hyp": "Hallo. Varzenao sherda ahe में दिल्ली हून फ़ोन कर तो आहै।",
+  "langs": [
+   "de-DE",
+   "de-DE",
+   "hi-IN"
+  ],
+  "wer": 1.0,
+  "cer": 0.6341463414634146,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 1,
+  "mode": "pinned_filled",
+  "ref": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "hyp": "తూ మలా స్పష్టపడే ఐకు శక్తో స్కా.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0833333333333333,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 2,
+  "mode": "pinned_filled",
+  "ref": "मी सुमारे वीस मिनिटांत स्टेशनवर पोहोचेन.",
+  "hyp": "మీ సుమారే విస్ మినిటా స్టేషన్‌వర్ పోహో చెయ్.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.1666666666666667,
+  "cer": 1.088235294117647,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 3,
+  "mode": "pinned_filled",
+  "ref": "कृपया मला रुग्णालयाचा पत्ता पाठवा",
+  "hyp": "कृपया मला रुग्णालयाचा पत्ता पाठवा.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 4,
+  "mode": "pinned_filled",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "hyp": "ఉద‌య మీటింగ్ కితీ వాజ్‌తా షురూ. హోయి.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0714285714285714,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 5,
+  "mode": "pinned_filled",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "hyp": "డాక్టరాన్ని మలాసంగిట్లే కి మీ తీన్ దివస్ విశ్రాంతి ఘేట్లిపాహిజే.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0769230769230769,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 6,
+  "mode": "pinned_filled",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "hyp": "आप्रते थोड़े हड़ू हरु पुनः सांगू शकाल का?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.6666666666666666,
+  "cer": 0.3125,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 7,
+  "mode": "pinned_filled",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "hyp": "आभी संध्याकारचा गाड़ी की दो टिकटें काट ली।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 1.3333333333333333,
+  "cer": 0.34210526315789475,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 8,
+  "mode": "pinned_filled",
+  "ref": "माझा फोन नंबर चार सात दोन नऊ सह संपतो",
+  "hyp": "माझा फ़ोन नंबर 472900 संपटो।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.7777777777777778,
+  "cer": 0.5172413793103449,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 9,
+  "mode": "pinned_filled",
+  "ref": "आपल्या मदतीबद्दल धन्यवाद, मी खरोखर त्याचे कौतुक करतो",
+  "hyp": "आपल्या मदतीबद्दल धन्यवाद. मी खरोखर त्याचे कौतुक करतो.",
+  "langs": [
+   "mr-IN",
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 0,
+  "mode": "pinned_filled",
+  "ref": "வணக்கம், என் பெயர் ஷரத், நான் டெல்லியில் இருந்து அழைக்கிறேன்",
+  "hyp": "వాడకం, ఎన్పేర్, శరత్. నా డెల్లిన అరేకిరెన్.",
+  "langs": [
+   "te-IN",
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 1,
+  "mode": "pinned_filled",
+  "ref": "நான் சொல்வதை உன்னால் தெளிவாகக் கேட்க முடிகிறதா",
+  "hyp": "నాన్ సోల్వదే ఉన్నాల్. టెలి వాఘే కేక్ గా ముడిగరదా.",
+  "langs": [
+   "te-IN",
+   "te-IN"
+  ],
+  "wer": 1.3333333333333333,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 2,
+  "mode": "pinned_filled",
+  "ref": "நான் சுமார் இருபது நிமிடங்களில் நிலையத்தை அடைவேன்",
+  "hyp": "நான் சுமார் 20 நிமிடங்களில் நிலையத்தை அடைவேன்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.13636363636363635,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 3,
+  "mode": "pinned_filled",
+  "ref": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்",
+  "hyp": "వర్మయిన్ మగ వరియే వెనక అనుపవం.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.25,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 4,
+  "mode": "pinned_filled",
+  "ref": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது",
+  "hyp": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 5,
+  "mode": "pinned_filled",
+  "ref": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்",
+  "hyp": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 6,
+  "mode": "pinned_filled",
+  "ref": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா",
+  "hyp": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 7,
+  "mode": "pinned_filled",
+  "ref": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்",
+  "hyp": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 8,
+  "mode": "pinned_filled",
+  "ref": "எனது தொலைபேசி எண் நான்கு ஏழு இரண்டு ஒன்பது உடன் முடிவடைகிறது",
+  "hyp": "எனது தொலைபேசி எண் 4729 உடன் முடிவடைகிறது.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.40384615384615385,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 9,
+  "mode": "pinned_filled",
+  "ref": "உங்கள் உதவிக்கு நன்றி, நான் அதை மிகவும் பாராட்டுகிறேன்",
+  "hyp": "உங்கள் உதவிக்கு நன்றி. நான் அதை மிகவும் பாராட்டுகிறேன்.",
+  "langs": [
+   "ta-IN",
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 0,
+  "mode": "catalog",
+  "ref": "Hello, my name is Sharad and I am calling from Delhi.",
+  "hyp": "Hallo. Mein Name ist Sharad an i am called from day.",
+  "langs": [
+   "de-DE",
+   "de-DE"
+  ],
+  "wer": 0.5454545454545454,
+  "cer": 0.3170731707317073,
+  "lang_ok": false
+ },
+ {
+  "lang": "en-IN",
+  "idx": 1,
+  "mode": "catalog",
+  "ref": "Can you hear me clearly?",
+  "hyp": "",
+  "langs": [],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": null
+ },
+ {
+  "lang": "en-IN",
+  "idx": 2,
+  "mode": "catalog",
+  "ref": "I will reach the station in about twenty minutes.",
+  "hyp": "I will reach the station in about 20 minutes.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.15,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 3,
+  "mode": "catalog",
+  "ref": "Please send me the address of the hospital.",
+  "hyp": "Please send me the address of the hospital.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 4,
+  "mode": "catalog",
+  "ref": "What time does the meeting start tomorrow?",
+  "hyp": "What time does the meeting start tomorrow?",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 5,
+  "mode": "catalog",
+  "ref": "The doctor said I should rest for three days.",
+  "hyp": "The doctor said I should rest for 3 days.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.1111111111111111,
+  "cer": 0.1388888888888889,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 7,
+  "mode": "catalog",
+  "ref": "We booked two tickets for the evening train.",
+  "hyp": "We booked 2 tickets for the evening.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.2222222222222222,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 6,
+  "mode": "catalog",
+  "ref": "Could you repeat that a little more slowly?",
+  "hyp": "కుడ్ యు రిపీట్ దట్ ఎ లిటిల్ మోర్ స్లోలీ.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "en-IN",
+  "idx": 8,
+  "mode": "catalog",
+  "ref": "My phone number ends with four seven two nine.",
+  "hyp": "My phone number ends with 479.",
+  "langs": [
+   "en-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.43243243243243246,
+  "lang_ok": true
+ },
+ {
+  "lang": "en-IN",
+  "idx": 9,
+  "mode": "catalog",
+  "ref": "Thank you for your help, I really appreciate it.",
+  "hyp": "Thank you for your help. I really appreciate it.",
+  "langs": [
+   "en-IN",
+   "en-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 1,
+  "mode": "catalog",
+  "ref": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं",
+  "hyp": "क्या आप मुझे स्पष्ट रूप से सुन सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 0,
+  "mode": "catalog",
+  "ref": "हैलो, मेरा नाम शरद है और मैं दिल्ली से फोन कर रहा हूं",
+  "hyp": "हैलो। मेरा नाम शरद है और मैं दिल्ली से फ़ोन कर रहा हूँ।",
+  "langs": [
+   "hi-IN",
+   "hi-IN"
+  ],
+  "wer": 0.15384615384615385,
+  "cer": 0.05,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 3,
+  "mode": "catalog",
+  "ref": "कृपया मुझे अस्पताल का पता भेजें",
+  "hyp": "कृपया मुझे अस्पताल का पता भेजें।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 2,
+  "mode": "catalog",
+  "ref": "मैं लगभग बीस मिनट में स्टेशन पहुंच जाऊंगा",
+  "hyp": "मैं लगभग 20 मिनट में स्टेशन पहुँच जाऊंगा।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.25,
+  "cer": 0.11764705882352941,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 4,
+  "mode": "catalog",
+  "ref": "कल बैठक किस बजे शुरू होगी",
+  "hyp": "कल बैठक किस बजे सुरू होगी?",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.05,
+  "lang_ok": false
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 5,
+  "mode": "catalog",
+  "ref": "डॉक्टर ने कहा कि मुझे तीन दिन आराम करना चाहिए",
+  "hyp": "डॉक्टर ने कहा कि मुझे 3 दिन आराम करना चाहिए।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.1,
+  "cer": 0.08333333333333333,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 6,
+  "mode": "catalog",
+  "ref": "क्या आप इसे थोड़ा और धीरे-धीरे दोहरा सकते हैं",
+  "hyp": "क्या आप इसे थोड़ा और धीरेधीरे दोहरा सकते हैं?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.2,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 7,
+  "mode": "catalog",
+  "ref": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए",
+  "hyp": "हमने शाम की ट्रेन के लिए दो टिकट बुक किए।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 8,
+  "mode": "catalog",
+  "ref": "मेरा फोन नंबर चार सात दो नौ के साथ समाप्त होता है",
+  "hyp": "మేరా ఫోన్ నంబర్ చార్ సాత్ లో నౌ కే. सात समाप्त होता है।",
+  "langs": [
+   "te-IN",
+   "hi-IN"
+  ],
+  "wer": 0.75,
+  "cer": 0.7368421052631579,
+  "lang_ok": false
+ },
+ {
+  "lang": "hi-IN",
+  "idx": 9,
+  "mode": "catalog",
+  "ref": "आपकी मदद के लिए धन्यवाद, मैं वास्तव में इसकी सराहना करता हूं",
+  "hyp": "आपकी मदद के लिए धन्यवाद। मैं वास्तव में इसकी सराहना करता हूँ।",
+  "langs": [
+   "hi-IN",
+   "hi-IN"
+  ],
+  "wer": 0.08333333333333333,
+  "cer": 0.020833333333333332,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 0,
+  "mode": "catalog",
+  "ref": "हॅलो, माझे नाव शरद आहे आणि मी दिल्लीहून फोन करतो आहे.",
+  "hyp": "Hallo. Varzenao sherda ahe में दिल्ली हून फ़ोन कर तो आहै।",
+  "langs": [
+   "de-DE",
+   "de-DE",
+   "hi-IN"
+  ],
+  "wer": 1.0,
+  "cer": 0.6341463414634146,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 1,
+  "mode": "catalog",
+  "ref": "तू मला स्पष्टपणे ऐकू शकतोस का?",
+  "hyp": "తూ మలా స్పష్టపడే ఐకు శక్తో స్కా.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0833333333333333,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 3,
+  "mode": "catalog",
+  "ref": "कृपया मला रुग्णालयाचा पत्ता पाठवा",
+  "hyp": "कृपया मला रुग्णालयाचा पत्ता पाठवा.",
+  "langs": [
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 2,
+  "mode": "catalog",
+  "ref": "मी सुमारे वीस मिनिटांत स्टेशनवर पोहोचेन.",
+  "hyp": "మీ సుమారే విస్ మినిటా స్టేషన్‌వర్ పోహో చెయ్.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.1666666666666667,
+  "cer": 1.088235294117647,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 4,
+  "mode": "catalog",
+  "ref": "उद्या मीटिंग किती वाजता सुरू होईल.",
+  "hyp": "ఉద‌య మీటింగ్ కితీ వాజ్‌తా షురూ. హోయి.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0714285714285714,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 5,
+  "mode": "catalog",
+  "ref": "डॉक्टरांनी मला सांगितले की मी तीन दिवस विश्रांती घेतली पाहिजे.",
+  "hyp": "డాక్టరాన్ని మలాసంగిట్లే కి మీ తీన్ దివస్. विश्रांती घेतली पाहिजे.",
+  "langs": [
+   "te-IN",
+   "mr-IN"
+  ],
+  "wer": 0.7,
+  "cer": 0.6730769230769231,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 6,
+  "mode": "catalog",
+  "ref": "आपण ते थोडे हळू हळू पुन्हा सांगू शकाल का?",
+  "hyp": "आप्रते थोड़े हड़ू हरु पुनः सांगू शकाल का?",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.6666666666666666,
+  "cer": 0.3125,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 7,
+  "mode": "catalog",
+  "ref": "आम्ही संध्याकाळच्या गाडीची दोन तिकिटे काढली.",
+  "hyp": "आभी संध्याकारचा गाड़ी की दो टिकटें काट ली।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 1.3333333333333333,
+  "cer": 0.34210526315789475,
+  "lang_ok": false
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 9,
+  "mode": "catalog",
+  "ref": "आपल्या मदतीबद्दल धन्यवाद, मी खरोखर त्याचे कौतुक करतो",
+  "hyp": "आपल्या मदतीबद्दल धन्यवाद. मी खरोखर त्याचे कौतुक करतो.",
+  "langs": [
+   "mr-IN",
+   "mr-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "mr-IN",
+  "idx": 8,
+  "mode": "catalog",
+  "ref": "माझा फोन नंबर चार सात दोन नऊ सह संपतो",
+  "hyp": "माझा फ़ोन नंबर 472900 संपटो।",
+  "langs": [
+   "hi-IN"
+  ],
+  "wer": 0.7777777777777778,
+  "cer": 0.5172413793103449,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 1,
+  "mode": "catalog",
+  "ref": "நான் சொல்வதை உன்னால் தெளிவாகக் கேட்க முடிகிறதா",
+  "hyp": "నాన్ సోల్వదే ఉన్నాల్. టెలి వాఘే కేక్ గా ముడిగరదా.",
+  "langs": [
+   "te-IN",
+   "te-IN"
+  ],
+  "wer": 1.3333333333333333,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 0,
+  "mode": "catalog",
+  "ref": "வணக்கம், என் பெயர் ஷரத், நான் டெல்லியில் இருந்து அழைக்கிறேன்",
+  "hyp": "వాడకం, ఎన్పేర్, శరత్. నా డెల్లిన అరేకిరెన్.",
+  "langs": [
+   "te-IN",
+   "te-IN"
+  ],
+  "wer": 1.0,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 2,
+  "mode": "catalog",
+  "ref": "நான் சுமார் இருபது நிமிடங்களில் நிலையத்தை அடைவேன்",
+  "hyp": "நான் சுமார் 20 நிமிடங்களில் நிலையத்தை அடைவேன்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.16666666666666666,
+  "cer": 0.13636363636363635,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 3,
+  "mode": "catalog",
+  "ref": "மருத்துவமனையின் முகவரியை எனக்கு அனுப்பவும்",
+  "hyp": "వర్మయిన్ మగ వరియే వెనక అనుపవం.",
+  "langs": [
+   "te-IN"
+  ],
+  "wer": 1.25,
+  "cer": 1.0,
+  "lang_ok": false
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 4,
+  "mode": "catalog",
+  "ref": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது",
+  "hyp": "நாளை கூட்டம் எந்த மணிக்கு தொடங்குகிறது?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 5,
+  "mode": "catalog",
+  "ref": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்",
+  "hyp": "நான் மூன்று நாட்கள் ஓய்வெடுக்க வேண்டும் என்று டாக்டர் கூறினார்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 6,
+  "mode": "catalog",
+  "ref": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா",
+  "hyp": "அதை இன்னும் கொஞ்சம் மெதுவாக சொல்ல முடியுமா?",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 7,
+  "mode": "catalog",
+  "ref": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்",
+  "hyp": "மாலை ரயிலுக்கு இரண்டு டிக்கெட்டுகளை முன்பதிவு செய்தோம்.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 9,
+  "mode": "catalog",
+  "ref": "உங்கள் உதவிக்கு நன்றி, நான் அதை மிகவும் பாராட்டுகிறேன்",
+  "hyp": "உங்கள் உதவிக்கு நன்றி. நான் அதை மிகவும் பாராட்டுகிறேன்.",
+  "langs": [
+   "ta-IN",
+   "ta-IN"
+  ],
+  "wer": 0.0,
+  "cer": 0.0,
+  "lang_ok": true
+ },
+ {
+  "lang": "ta-IN",
+  "idx": 8,
+  "mode": "catalog",
+  "ref": "எனது தொலைபேசி எண் நான்கு ஏழு இரண்டு ஒன்பது உடன் முடிவடைகிறது",
+  "hyp": "எனது தொலைபேசி எண் 4729 உடன் முடிவடைகிறது.",
+  "langs": [
+   "ta-IN"
+  ],
+  "wer": 0.4444444444444444,
+  "cer": 0.40384615384615385,
+  "lang_ok": true
+ }
+]

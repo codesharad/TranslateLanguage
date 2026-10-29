@@ -21,23 +21,48 @@ class TranscriptList extends StatefulWidget {
 
 class _TranscriptListState extends State<TranscriptList> {
   final _scroll = ScrollController();
+  // The controller mutates one list in place, so the old widget's list always looks the
+  // same as the new one. Compare against what was last seen here instead.
+  int _seenCount = 0;
+  String _seenLastText = '';
+  bool _seenLastFinal = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _remember();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd(animate: false));
+  }
+
+  void _remember() {
+    final lines = widget.lines;
+    _seenCount = lines.length;
+    _seenLastText = lines.isEmpty ? '' : lines.last.sourceText;
+    _seenLastFinal = lines.isEmpty ? true : lines.last.isFinal;
+  }
 
   @override
   void didUpdateWidget(TranscriptList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final grew = widget.lines.length != oldWidget.lines.length;
-    final edited = widget.lines.isNotEmpty &&
-        oldWidget.lines.isNotEmpty &&
-        widget.lines.last.sourceText != oldWidget.lines.last.sourceText;
-    if (grew || edited) {
+    final lines = widget.lines;
+    final changed = lines.length != _seenCount ||
+        (lines.isNotEmpty &&
+            (lines.last.sourceText != _seenLastText || lines.last.isFinal != _seenLastFinal));
+    _remember();
+    if (changed) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     }
   }
 
-  void _scrollToEnd() {
+  void _scrollToEnd({bool animate = true}) {
     if (!_scroll.hasClients) return;
+    final end = _scroll.position.maxScrollExtent;
+    if (!animate) {
+      _scroll.jumpTo(end);
+      return;
+    }
     _scroll.animateTo(
-      _scroll.position.maxScrollExtent,
+      end,
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOut,
     );

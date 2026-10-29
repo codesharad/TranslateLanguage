@@ -66,6 +66,12 @@ class Settings(BaseSettings):
     partial_min_chars: int = 4
     half_duplex: bool = True
     barge_in: bool = True
+    # Forward the speaker's original voice to the listener while no translation is playing.
+    # Off: the listener hears only the translation, as the architecture intends.
+    relay_original_voice: bool = False
+    # Ignore a speaker's mic while their translated voice plays on the other phone. Only for
+    # two phones in the same room, where each mic hears the other's speaker.
+    crosstalk_guard: bool = False
 
     @property
     def frame_bytes(self) -> int:
