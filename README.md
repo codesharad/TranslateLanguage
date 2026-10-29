@@ -122,11 +122,25 @@ flutter create . --project-name translate_language --org com.translatelanguage
 flutter pub get
 ```
 
-Run on two phones on your LAN (not 127.0.0.1):
+Debug builds talk to this PC at `127.0.0.1:8080`. Forward that port on each USB phone, then run:
 
 ```bash
-flutter run --dart-define=API_HOST=192.168.1.10
+adb -s <serial> reverse tcp:8080 tcp:8080
+flutter run -d <serial>
 ```
+
+Phones on Wi-Fi without USB need the PC's LAN address instead:
+
+```bash
+flutter run -d <serial> --dart-define=API_HOST=192.168.1.10:8080
+```
+
+Release builds (`flutter build apk --release`) use `https://translatelanguage.onrender.com`.
+Point one at another server with `--dart-define=API_HOST=api.example.com --dart-define=API_TLS=true`.
+`API_BASE`, `SIGNALING_URL`, and `ORCHESTRATOR_URL` still override each URL on its own.
+
+While `TWILIO_VERIFY_SERVICE_SID` is empty and `ALLOW_DEV_OTP=true`, the local server skips SMS
+and the verify screen fills in `DEV_OTP_CODE` (default `000000`).
 
 1. Sign in with the SMS code sent to the phone number.
 2. Allow contacts — registered numbers highlight with a green dot when online.

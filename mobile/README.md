@@ -6,10 +6,12 @@ If `flutter create` offers to overwrite `lib/main.dart`, `AndroidManifest.xml`,
 `Info.plist`, `AppDelegate.swift`, or `MainActivity.kt`, decline — those are
 the translator-call implementations.
 
-Physical devices cannot reach `127.0.0.1` on your PC. Pass your LAN IP:
+Debug builds use `http://127.0.0.1:8080`. On a USB phone, forward the port first:
 
 ```
-flutter run --dart-define=SIGNALING_URL=ws://192.168.1.10:8080/v1/signal \
-            --dart-define=ORCHESTRATOR_URL=ws://192.168.1.10:8090/v1/media \
-            --dart-define=USER_ID=user-a
+adb -s <serial> reverse tcp:8080 tcp:8080
+flutter run -d <serial>
 ```
+
+Without USB, pass the PC's LAN address: `flutter run --dart-define=API_HOST=192.168.1.10:8080`.
+Release builds use the hosted server. See the root README for every flag.

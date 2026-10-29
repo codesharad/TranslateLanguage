@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
   AppConfig({
     required this.apiBase,
@@ -9,20 +11,32 @@ class AppConfig {
   final String signalingUrl;
   final String orchestratorUrl;
 
-  static const host = 'translatelanguage.onrender.com';
+  /// Hosted server used by release builds.
+  static const hostedHost = 'translatelanguage.onrender.com';
 
-  factory AppConfig.production() => _from(host);
+  /// Debug builds on a USB phone reach this PC through `adb reverse tcp:8080 tcp:8080`.
+  static const localHost = '127.0.0.1:8080';
 
-  static Future<AppConfig> load() async => AppConfig.production();
+  static Future<AppConfig> load() async => fromEnvironment();
 
-  static AppConfig _from(String host) {
+  /// Defaults: debug → http://127.0.0.1:8080, release → https://translatelanguage.onrender.com.
+  /// `--dart-define=API_HOST=192.168.1.10:8080` picks another server (`API_TLS=true` for https/wss).
+  /// API_BASE, SIGNALING_URL, and ORCHESTRATOR_URL still override each URL on its own.
+  static AppConfig fromEnvironment() {
+    const hostOverride = String.fromEnvironment('API_HOST', defaultValue: '');
+    const tlsOverride = String.fromEnvironment('API_TLS', defaultValue: '');
+    final host = hostOverride.isNotEmpty ? hostOverride : (kReleaseMode ? hostedHost : localHost);
+    final tls = tlsOverride.isNotEmpty ? tlsOverride == 'true' : hostOverride.isEmpty && kReleaseMode;
+    final http = tls ? 'https' : 'http';
+    final ws = tls ? 'wss' : 'ws';
+
     const api = String.fromEnvironment('API_BASE', defaultValue: '');
     const signaling = String.fromEnvironment('SIGNALING_URL', defaultValue: '');
     const orchestrator = String.fromEnvironment('ORCHESTRATOR_URL', defaultValue: '');
     return AppConfig(
-      apiBase: api.isNotEmpty ? api : 'https://$host',
-      signalingUrl: signaling.isNotEmpty ? signaling : 'wss://$host/v1/signal',
-      orchestratorUrl: orchestrator.isNotEmpty ? orchestrator : 'wss://$host/v1/media',
+      apiBase: api.isNotEmpty ? api : '$http://$host',
+      signalingUrl: signaling.isNotEmpty ? signaling : '$ws://$host/v1/signal',
+      orchestratorUrl: orchestrator.isNotEmpty ? orchestrator : '$ws://$host/v1/media',
     );
   }
 }

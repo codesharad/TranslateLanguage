@@ -8,11 +8,14 @@ typedef SignalHandler = void Function(Map<String, dynamic> message);
 
 /// Signaling: JWT auth, dial-user / incoming-call, SDP/ICE.
 class SignalingService {
-  SignalingService({required this.url, required this.onMessage, this.onStatus});
+  SignalingService({required this.url, required this.onMessage, this.onStatus, this.onAuthRejected});
 
   final String url;
   final SignalHandler onMessage;
   final void Function(bool connected)? onStatus;
+
+  /// The server refused the saved token. Reconnecting with it again is pointless.
+  final void Function()? onAuthRejected;
   WebSocketChannel? _channel;
   Timer? _retry;
   Timer? _ping;
@@ -71,11 +74,19 @@ class SignalingService {
           if (gen != _generation) return;
           _missedPongs = 0;
           final map = jsonDecode(event as String) as Map<String, dynamic>;
+          if (isAuthRejection(map)) {
+            _stopForAuth();
+            return;
+          }
           onMessage(map);
         },
         onDone: () {
           if (_disposed || gen != _generation) return;
           debugPrint('signaling closed code=${channel.closeCode}');
+          if (channel.closeCode == 4401) {
+            _stopForAuth();
+            return;
+          }
           _scheduleReconnect();
         },
         onError: (e) {
@@ -99,6 +110,26 @@ class SignalingService {
       onStatus?.call(false);
       _scheduleReconnect();
     }
+  }
+
+  /// Matches the server's auth_expired / auth_invalid codes, and the raw jsonwebtoken
+  /// messages older servers send instead.
+  static bool isAuthRejection(Map<String, dynamic> msg) {
+    if (msg['type'] != 'error') return false;
+    final payload = msg['payload'];
+    if (payload is! Map) return false;
+    final code = payload['code'];
+    if (code == 'auth_expired' || code == 'auth_invalid') return true;
+    final message = payload['message']?.toString() ?? '';
+    return RegExp(r'^(jwt |invalid (token|signature)$)').hasMatch(message);
+  }
+
+  void _stopForAuth() {
+    if (_disposed) return;
+    debugPrint('signaling auth rejected; stopping');
+    unawaited(dispose());
+    onStatus?.call(false);
+    onAuthRejected?.call();
   }
 
   void _scheduleReconnect() {

@@ -25,6 +25,8 @@ services:
       ORCHESTRATOR_WS_URL: ws://orchestrator:8090/v1/media
       JWT_SECRET: ${JWT_SECRET:-dev-only-change-me}
       OTP_TTL_SEC: "300"
+      ALLOW_DEV_OTP: ${ALLOW_DEV_OTP:-true}
+      DEV_OTP_CODE: ${DEV_OTP_CODE:-000000}
       APNS_KEY_PATH: ${APNS_KEY_PATH:-}
       APNS_KEY_ID: ${APNS_KEY_ID:-}
       APNS_TEAM_ID: ${APNS_TEAM_ID:-}
