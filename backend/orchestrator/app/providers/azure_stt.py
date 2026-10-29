@@ -29,6 +29,9 @@ class AzureStreamingStt(StreamingStt):
         self._loop: asyncio.AbstractEventLoop | None = None
         self._generation = 0
         self._priority: list[str] = []
+        # True: automatic detection chooses only among the pinned languages. False fills the
+        # list to ten from the catalog, which was the original behaviour (kept for evaluation).
+        self.pin_only = True
         self._auto = False
 
     def prepare_detection(self, *codes: str) -> None:
@@ -37,7 +40,7 @@ class AzureStreamingStt(StreamingStt):
     async def start(self, language: str) -> None:
         self._generation += 1
         generation = self._generation
-        self._results = asyncio.Queue()
+        # The results queue is kept across restarts so the caption pump keeps reading it.
         self._loop = asyncio.get_running_loop()
         format_ = speechsdk.audio.AudioStreamFormat(
             samples_per_second=self._settings.sample_rate_hz,
@@ -50,10 +53,14 @@ class AzureStreamingStt(StreamingStt):
             subscription=self._settings.azure_speech_key,
             region=self._settings.azure_speech_region,
         )
+        # Pick only between the call's own languages. With all ten candidates, Hindi was
+        # often heard as English and passed through untranslated.
+        candidates = lid_candidates(*self._priority, fill=not (self._priority and self.pin_only))
+        if is_auto(language) and len(candidates) == 1:
+            language = candidates[0]
         self._auto = is_auto(language)
         lid_config = None
         if self._auto:
-            candidates = lid_candidates(*self._priority)
             log.info("stt.lid", candidates=candidates)
             speech_config.set_property(
                 speechsdk.PropertyId.SpeechServiceConnection_LanguageIdMode,
@@ -86,6 +93,18 @@ class AzureStreamingStt(StreamingStt):
         self._recognizer.recognized.connect(lambda evt, gen=generation: self._on_recognized(evt, gen))
         self._recognizer.canceled.connect(lambda evt, gen=generation: self._on_canceled(evt, gen))
         await asyncio.to_thread(self._recognizer.start_continuous_recognition)
+
+    async def switch_language(self, language: str) -> None:
+        """Restart recognition in another language without ending the result stream."""
+        recognizer, push = self._recognizer, self._push
+        self._generation += 1  # events from the old recognizer are ignored from here on
+        self._recognizer = None
+        self._push = None
+        if recognizer is not None:
+            await asyncio.to_thread(recognizer.stop_continuous_recognition)
+        if push is not None:
+            await asyncio.to_thread(push.close)
+        await self.start(language)
 
     async def push_pcm(self, pcm: bytes) -> None:
         if self._push is not None and pcm:

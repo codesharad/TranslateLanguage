@@ -84,5 +84,24 @@ class CallKitService {
     await FlutterCallkitIncoming.endCall(callId);
   }
 
+  /// Takes the incoming-call notification (and its ringtone) down.
+  Future<void> endAll() async {
+    await FlutterCallkitIncoming.endAllCalls();
+  }
+
+  /// Android 13+ needs the notification permission, and Android 14+ the full-screen one,
+  /// or an incoming call is silent and cannot light up the screen.
+  Future<void> requestAndroidPermissions() async {
+    try {
+      await FlutterCallkitIncoming.requestNotificationPermission({
+        'rationaleMessagePermission': 'Notifications are needed to ring when someone calls.',
+        'postNotificationMessageRequired': 'Allow notifications in Settings so calls can ring.',
+      });
+      if (await FlutterCallkitIncoming.canUseFullScreenIntent() != true) {
+        await FlutterCallkitIncoming.requestFullIntentPermission();
+      }
+    } catch (_) {}
+  }
+
   Stream<CallEvent?> get events => FlutterCallkitIncoming.onEvent;
 }

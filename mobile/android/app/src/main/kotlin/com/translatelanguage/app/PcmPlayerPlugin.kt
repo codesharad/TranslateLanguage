@@ -22,6 +22,11 @@ class PcmPlayerPlugin(
     private var track: AudioTrack? = null
     private var focusRequest: AudioFocusRequest? = null
 
+    // Translated speech arrives faster than it plays, so writes queue here and run in order
+    // on one thread. A non-blocking write into a small buffer used to drop most of a sentence.
+    private val writer = java.util.concurrent.Executors.newSingleThreadExecutor()
+    @Volatile private var writeGeneration = 0
+
     override fun onMethodCall(call: io.flutter.plugin.common.MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "start" -> {
@@ -32,7 +37,8 @@ class PcmPlayerPlugin(
                     AudioFormat.CHANNEL_OUT_MONO,
                     AudioFormat.ENCODING_PCM_16BIT,
                 )
-                val buf = max(minBuf, sampleRate * 2 / 8)
+                val buf = max(minBuf, sampleRate * 2)
+                writeGeneration++
                 track?.release()
                 track = buildTrack(sampleRate, buf, AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 track?.setVolume(1.0f)
@@ -41,16 +47,27 @@ class PcmPlayerPlugin(
             }
             "write" -> {
                 val bytes = call.argument<ByteArray>("bytes") ?: ByteArray(0)
-                track?.write(bytes, 0, bytes.size, AudioTrack.WRITE_NON_BLOCKING)
+                val generation = writeGeneration
+                writer.execute {
+                    val current = track ?: return@execute
+                    var offset = 0
+                    while (offset < bytes.size && generation == writeGeneration) {
+                        val written = current.write(bytes, offset, bytes.size - offset, AudioTrack.WRITE_BLOCKING)
+                        if (written <= 0) break
+                        offset += written
+                    }
+                }
                 result.success(null)
             }
             "flush" -> {
+                writeGeneration++
                 track?.pause()
                 track?.flush()
                 track?.play()
                 result.success(null)
             }
             "stop" -> {
+                writeGeneration++
                 track?.stop()
                 track?.release()
                 track = null
@@ -71,6 +88,11 @@ class PcmPlayerPlugin(
         am.mode = AudioManager.MODE_IN_COMMUNICATION
         @Suppress("DEPRECATION")
         am.isSpeakerphoneOn = speakerOn
+        // Voice-call volume is separate from media volume and often sits near zero.
+        val maxCall = am.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL)
+        if (am.getStreamVolume(AudioManager.STREAM_VOICE_CALL) < maxCall * 0.8) {
+            am.setStreamVolume(AudioManager.STREAM_VOICE_CALL, (maxCall * 0.8).toInt().coerceAtLeast(1), 0)
+        }
         val attrs = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
