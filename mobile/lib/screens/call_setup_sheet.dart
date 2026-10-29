@@ -6,7 +6,6 @@ import '../state/call_controller.dart';
 import '../widgets/language_card.dart';
 
 Future<void> showCallSetupSheet(BuildContext context, Contact contact) async {
-  final call = context.read<CallController>();
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,

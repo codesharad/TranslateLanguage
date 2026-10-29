@@ -46,7 +46,15 @@ class _TranslateLanguageAppState extends State<TranslateLanguageApp> {
     _api = ApiClient(baseUrl: config.apiBase);
     _auth = AuthService(_api);
     _call = CallController(app: config, api: _api);
+    _call.onAuthRejected = _signOutExpired;
     _call.addListener(_onCallChanged);
+  }
+
+  /// The saved token is expired or invalid: drop it and go back to the phone-number screen.
+  Future<void> _signOutExpired() async {
+    await _auth.signOut();
+    await _call.signOut();
+    _navKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   void _onCallChanged() {

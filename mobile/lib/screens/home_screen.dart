@@ -58,8 +58,14 @@ class _ContactsTab extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('TranslateLanguage', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white54, letterSpacing: 1.3)),
-          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Text('TranslateLanguage', style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.white54, letterSpacing: 1.3)),
+              ),
+              const _SignOutButton(compact: true),
+            ],
+          ),
           const Text('App-to-app translator', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700)),
           const SizedBox(height: 4),
           Text('You hear ${call.src.englishName}',
@@ -296,22 +302,41 @@ class _AccountTab extends StatelessWidget {
               label: const Text('Invite someone'),
             ),
           ),
-          const Spacer(),
-          SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: TextButton(
-              onPressed: () async {
-                final auth = context.read<AuthService>();
-                final account = context.read<CallController>();
-                await auth.signOut();
-                await account.signOut();
-              },
-              child: const Text('Sign out'),
-            ),
-          ),
+          const SizedBox(height: 12),
+          const _SignOutButton(),
         ],
       ),
     );
+  }
+}
+
+class _SignOutButton extends StatelessWidget {
+  const _SignOutButton({this.compact = false});
+
+  /// Compact fits a header row; the full-width version sits with the other account actions.
+  final bool compact;
+
+  Future<void> _signOut(BuildContext context) async {
+    final auth = context.read<AuthService>();
+    final account = context.read<CallController>();
+    await auth.signOut();
+    await account.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const red = Color(0xFFE23B4A);
+    final style = OutlinedButton.styleFrom(
+      foregroundColor: red,
+      side: const BorderSide(color: red),
+    );
+    final button = OutlinedButton.icon(
+      style: style,
+      onPressed: () => _signOut(context),
+      icon: const Icon(Icons.logout),
+      label: const Text('Sign out'),
+    );
+    if (compact) return button;
+    return SizedBox(width: double.infinity, height: 52, child: button);
   }
 }

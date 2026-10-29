@@ -50,6 +50,7 @@ class _ChangePhoneScreenState extends State<ChangePhoneScreen> {
             displayName: '',
             changePhone: true,
             resendAfterSec: issued.retryAfterSec,
+            devCode: issued.devCode,
           ),
         ),
       );

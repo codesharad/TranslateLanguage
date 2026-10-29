@@ -19,6 +19,7 @@ class OtpVerifyScreen extends StatefulWidget {
     this.register = false,
     this.changePhone = false,
     this.resendAfterSec = 60,
+    this.devCode,
   });
 
   final String phone;
@@ -27,6 +28,7 @@ class OtpVerifyScreen extends StatefulWidget {
   final bool register;
   final bool changePhone;
   final int resendAfterSec;
+  final String? devCode;
 
   @override
   State<OtpVerifyScreen> createState() => _OtpVerifyScreenState();
@@ -43,6 +45,7 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
   void initState() {
     super.initState();
     _seconds = widget.resendAfterSec.clamp(0, 60);
+    if (widget.devCode != null) _code.text = widget.devCode!;
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
       if (!mounted || _seconds <= 0) return;
       setState(() => _seconds -= 1);
@@ -98,7 +101,10 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       final auth = context.read<AuthService>();
       final issued = await auth.requestOtp(phoneNumber: widget.phone, countryCode: widget.countryCode);
       if (!mounted) return;
-      setState(() => _seconds = issued.retryAfterSec.clamp(0, 60));
+      setState(() {
+        _seconds = issued.retryAfterSec.clamp(0, 60);
+        if (issued.devCode != null) _code.text = issued.devCode!;
+      });
     } catch (e) {
       if (!mounted) return;
       final wait = e is ApiException ? e.retryAfterSec : null;
@@ -121,7 +127,12 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Code sent to ${widget.phone}', style: const TextStyle(color: Colors.white70)),
+            Text(
+              widget.devCode == null
+                  ? 'Code sent to ${widget.phone}'
+                  : 'SMS is not set up. Use code ${widget.devCode} for ${widget.phone}',
+              style: const TextStyle(color: Colors.white70),
+            ),
             const SizedBox(height: 8),
             const Text('The code expires in 5 minutes.', style: TextStyle(color: Colors.white54)),
             const SizedBox(height: 16),

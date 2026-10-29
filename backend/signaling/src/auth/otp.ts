@@ -1,3 +1,4 @@
+import { createHash, timingSafeEqual } from "node:crypto";
 import { config } from "../config.js";
 import { query } from "../db/pool.js";
 import { normalizePhone } from "./phone.js";
@@ -7,11 +8,35 @@ import { checkSmsVerification, createSmsVerification } from "./twilio_verify.js"
 const COOLDOWN_MS = 60_000;
 const MAX_SENDS_PER_HOUR = 3;
 const MAX_VERIFY_ATTEMPTS = 5;
+const TWILIO_MARKER = "twilio-verify";
+
+function twilioReady(): boolean {
+  const { accountSid, authToken, verifyServiceSid } = config.twilio;
+  return Boolean(accountSid && authToken && verifyServiceSid);
+}
+
+/** Fixed code for a local server that has no Twilio account. Off once SMS credentials are set. */
+export function localDevCode(): string | null {
+  if (twilioReady()) return null;
+  if (process.env.ALLOW_DEV_OTP !== "true") return null;
+  const code = process.env.DEV_OTP_CODE ?? "000000";
+  return /^\d{4,8}$/.test(code) ? code : null;
+}
+
+function hashCode(phone: string, code: string): string {
+  return createHash("sha256").update(`${phone}:${code}`).digest("hex");
+}
+
+function hashMatches(phone: string, code: string, stored: string): boolean {
+  const digest = Buffer.from(hashCode(phone, code));
+  const current = Buffer.from(stored);
+  return digest.length === current.length && timingSafeEqual(digest, current);
+}
 
 export async function issueOtp(
   rawPhone: string,
   countryCode?: string,
-): Promise<{ phone: string; retryAfterSec: number; ttlSec: number }> {
+): Promise<{ phone: string; retryAfterSec: number; ttlSec: number; devCode?: string }> {
   const phone = normalizePhone(rawPhone, countryCode);
   const recent = await query<{ sent_at: Date }>(
     `SELECT sent_at FROM otp_sends
@@ -40,19 +65,30 @@ export async function issueOtp(
     }
   }
 
-  await createSmsVerification(phone);
+  const devCode = localDevCode();
+  if (devCode) {
+    console.info(`[otp] no SMS provider; local code ${devCode} for ****${phone.slice(-4)}`);
+  } else {
+    await createSmsVerification(phone);
+  }
+  const codeHash = devCode ? hashCode(phone, devCode) : TWILIO_MARKER;
   const expires = new Date(Date.now() + config.otpTtlSec * 1000);
   await query(
     `INSERT INTO otp_challenges (phone_e164, code_hash, expires_at, attempts)
-     VALUES ($1, 'twilio-verify', $2, 0)
+     VALUES ($1, $2, $3, 0)
      ON CONFLICT (phone_e164)
-     DO UPDATE SET code_hash = 'twilio-verify', expires_at = EXCLUDED.expires_at, attempts = 0, created_at = now()`,
-    [phone, expires.toISOString()],
+     DO UPDATE SET code_hash = EXCLUDED.code_hash, expires_at = EXCLUDED.expires_at, attempts = 0, created_at = now()`,
+    [phone, codeHash, expires.toISOString()],
   );
   await query(`INSERT INTO otp_sends (phone_e164) VALUES ($1)`, [phone]);
   await query(`DELETE FROM otp_sends WHERE sent_at < now() - interval '1 day'`);
   console.info(`[otp] sent ****${phone.slice(-4)}`);
-  return { phone, retryAfterSec: 60, ttlSec: config.otpTtlSec };
+  return {
+    phone,
+    retryAfterSec: 60,
+    ttlSec: config.otpTtlSec,
+    ...(devCode ? { devCode } : {}),
+  };
 }
 
 export async function consumeOtp(rawPhone: string, code: string, countryCode?: string): Promise<string> {
@@ -62,8 +98,8 @@ export async function consumeOtp(rawPhone: string, code: string, countryCode?: s
     throw new OtpError("Enter the code from the SMS.", "otp_invalid", 400);
   }
 
-  const row = await query<{ expires_at: Date; attempts: number }>(
-    `SELECT expires_at, attempts FROM otp_challenges WHERE phone_e164 = $1`,
+  const row = await query<{ expires_at: Date; attempts: number; code_hash: string }>(
+    `SELECT expires_at, attempts, code_hash FROM otp_challenges WHERE phone_e164 = $1`,
     [phone],
   );
   const challenge = row.rows[0];
@@ -75,12 +111,17 @@ export async function consumeOtp(rawPhone: string, code: string, countryCode?: s
     throw new OtpError("That code has expired. Request a new one.", "otp_expired", 400);
   }
 
-  const status = await checkSmsVerification(phone, trimmed);
-  if (status !== "approved") {
-    await query(`UPDATE otp_challenges SET attempts = attempts + 1 WHERE phone_e164 = $1`, [phone]);
-    if (status === "canceled" || status === "expired") {
-      throw new OtpError("That code has expired. Request a new one.", "otp_expired", 400);
+  if (challenge.code_hash === TWILIO_MARKER) {
+    const status = await checkSmsVerification(phone, trimmed);
+    if (status !== "approved") {
+      await query(`UPDATE otp_challenges SET attempts = attempts + 1 WHERE phone_e164 = $1`, [phone]);
+      if (status === "canceled" || status === "expired") {
+        throw new OtpError("That code has expired. Request a new one.", "otp_expired", 400);
+      }
+      throw new OtpError("That code is wrong.", "otp_invalid", 400);
     }
+  } else if (!hashMatches(phone, trimmed, challenge.code_hash)) {
+    await query(`UPDATE otp_challenges SET attempts = attempts + 1 WHERE phone_e164 = $1`, [phone]);
     throw new OtpError("That code is wrong.", "otp_invalid", 400);
   }
 

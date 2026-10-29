@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -53,6 +51,9 @@ class CallController extends ChangeNotifier {
   String sttProvider = '';
   bool connecting = false;
   bool signalingOk = false;
+
+  /// Set by the app shell. Called when the server rejects the saved login.
+  Future<void> Function()? onAuthRejected;
 
   SignalingService? _signaling;
   WebrtcCallService? _webrtc;
@@ -107,6 +108,7 @@ class CallController extends ChangeNotifier {
         signalingOk = ok;
         notifyListeners();
       },
+      onAuthRejected: _authRejected,
     );
     await _signaling!.connect(
       userId: userId,
@@ -144,6 +146,7 @@ class CallController extends ChangeNotifier {
       matched = merged.values.toList();
     } catch (e) {
       debugPrint('contacts $e');
+      if (e is ApiException && e.status == 401) unawaited(_authRejected());
     } finally {
       contactsLoading = false;
       notifyListeners();
@@ -244,6 +247,18 @@ class CallController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _signingOut = false;
+
+  Future<void> _authRejected() async {
+    if (_signingOut || userId.isEmpty) return;
+    _signingOut = true;
+    try {
+      await onAuthRejected?.call();
+    } finally {
+      _signingOut = false;
+    }
+  }
+
   Future<void> signOut() async {
     if (session != null) await hangup();
     final previous = _signaling;
@@ -253,6 +268,9 @@ class CallController extends ChangeNotifier {
     displayName = '';
     phone = '';
     accessToken = null;
+    api.accessToken = null;
+    lastError = null;
+    signalingOk = false;
     matched = [];
     online = [];
     notifyListeners();

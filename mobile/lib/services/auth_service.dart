@@ -12,7 +12,7 @@ class AuthService {
   static const _tokenKey = 'access_token';
   static const _userKey = 'user_json';
 
-  Future<({String phone, int retryAfterSec})> requestOtp({
+  Future<({String phone, int retryAfterSec, String? devCode})> requestOtp({
     required String phoneNumber,
     String? countryCode,
   }) async {
@@ -20,9 +20,11 @@ class AuthService {
       'phoneNumber': phoneNumber,
       if (countryCode != null) 'countryCode': countryCode,
     });
+    final devCode = json['devCode'] as String?;
     return (
       phone: json['phone'] as String,
       retryAfterSec: (json['retryAfterSec'] as num?)?.toInt() ?? 60,
+      devCode: devCode != null && devCode.isNotEmpty ? devCode : null,
     );
   }
 

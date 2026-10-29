@@ -55,6 +55,7 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
             displayName: _name.text.trim(),
             register: _register,
             resendAfterSec: issued.retryAfterSec,
+            devCode: issued.devCode,
           ),
         ),
       );
@@ -108,14 +109,18 @@ class _OtpPhoneScreenState extends State<OtpPhoneScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 118,
+                    width: 128,
                     child: DropdownButtonFormField<String>(
+                      isExpanded: true,
                       initialValue: _country.iso,
                       decoration: _field(label: 'Country'),
                       dropdownColor: const Color(0xFF0E1C30),
                       items: [
                         for (final country in dialCountries)
-                          DropdownMenuItem(value: country.iso, child: Text(country.label)),
+                          DropdownMenuItem(
+                            value: country.iso,
+                            child: Text(country.label, overflow: TextOverflow.ellipsis),
+                          ),
                       ],
                       onChanged: _busy
                           ? null

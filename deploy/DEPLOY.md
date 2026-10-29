@@ -17,7 +17,7 @@ Do not put API keys in git. Render marks `sync: false` secrets as dashboard-only
    - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_VERIFY_SERVICE_SID` on the web service
    - `JWT_SECRET` is generated for you
 4. Wait until both services are live. Open `https://translatelanguage.onrender.com/health`. It should return `"status":"ok"`. If the name `translatelanguage` is taken, use the hostname Render shows and put that same host in `PUBLIC_BASE_URL`.
-5. On each phone, open the app, enter that host in **Cloud host** (no `https://`), and turn on **Internet server**. The sockets become `wss://` on port 443. Turn the switch off to go back to the USB connection on this PC.
+5. Build a release APK (`flutter build apk --release`) and install it on each phone. Release builds use `https://translatelanguage.onrender.com` and `wss://` on port 443. For a different Render hostname, add `--dart-define=API_HOST=<host> --dart-define=API_TLS=true`. Debug builds stay on the USB connection to this PC.
 
 If the orchestrator restarts with an out-of-memory error, change its plan to Standard (2 GB). A sleeping free instance cannot keep a call open.
 

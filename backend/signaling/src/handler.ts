@@ -1,5 +1,6 @@
 import type { IncomingMessage } from "node:http";
 import type { WebSocket } from "ws";
+import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { verifyAccess } from "./auth/jwt.js";
 import { normalizePhone } from "./auth/phone.js";
@@ -17,18 +18,30 @@ const registerSchema = z.object({
 
 export function attachClient(ws: WebSocket, req: IncomingMessage): void {
   let userId: string | null = null;
+  // Once a token is rejected this socket is done: no legacy register, no further messages.
+  let rejected = false;
+
+  const rejectAuth = (err: unknown): void => {
+    rejected = true;
+    userId = null;
+    const code = err instanceof jwt.TokenExpiredError ? "auth_expired" : "auth_invalid";
+    const message = code === "auth_expired" ? "Your session expired. Sign in again." : "Sign in again.";
+    ws.send(JSON.stringify({ type: "error", payload: { code, message } }));
+    ws.close(4401, code);
+  };
 
   const boot = tokenFromRequest(req);
   if (boot) {
     try {
       userId = verifyAccess(boot).sub;
-    } catch {
-      ws.close(4401, "invalid token");
+    } catch (err) {
+      rejectAuth(err);
       return;
     }
   }
 
   ws.on("message", async (raw) => {
+    if (rejected) return;
     let msg: WireMessage & Record<string, unknown>;
     try {
       msg = JSON.parse(raw.toString());
@@ -42,7 +55,13 @@ export function attachClient(ws: WebSocket, req: IncomingMessage): void {
         return;
       }
       if (msg.type === "auth" && msg.token) {
-        const claims = verifyAccess(msg.token);
+        let claims;
+        try {
+          claims = verifyAccess(msg.token);
+        } catch (err) {
+          rejectAuth(err);
+          return;
+        }
         userId = claims.sub;
         ws.send(JSON.stringify({ type: "auth", payload: { ok: true, userId } }));
         return;

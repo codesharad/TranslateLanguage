@@ -101,10 +101,11 @@ export function authRouter(): Router {
       const issued = await issueOtp(body.phoneNumber ?? body.phone ?? "", body.countryCode);
       res.json({
         success: true,
-        message: "OTP sent successfully",
+        message: issued.devCode ? "Local sign-in code ready" : "OTP sent successfully",
         phone: issued.phone,
         ttlSec: issued.ttlSec,
         retryAfterSec: issued.retryAfterSec,
+        ...(issued.devCode ? { devCode: issued.devCode } : {}),
       });
     } catch (err) {
       fail(res, err);
