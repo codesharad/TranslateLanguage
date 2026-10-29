@@ -15,7 +15,6 @@ services:
     plan: starter
     dockerfilePath: ./backend/orchestrator/Dockerfile
     dockerContext: ./backend/orchestrator
-    healthCheckPath: /health
     envVars:
       - key: PIPELINE_PROVIDER
         value: azure
