@@ -1,0 +1,18 @@
+Copyright (c) 2026 Sharad Dixit. All rights reserved.
+
+This software, including its source code, documentation and the compiled application
+(together, the "Software"), is the property of the copyright owner named above.
+
+No licence or right is granted to copy, modify, merge, publish, distribute, sublicense,
+sell, reverse engineer or otherwise use the Software, in whole or in part, without the
+prior written permission of the copyright owner. People to whom the owner has personally
+given the application or the source code may use it only for the purpose the owner gave
+it to them for, such as testing, and may not pass it on.
+
+Third-party components used by the Software remain under their own licences. They are
+listed in docs/copyright/THIRD_PARTY.md.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
